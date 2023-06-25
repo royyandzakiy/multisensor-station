@@ -1,8 +1,10 @@
 # Unit Testing on Platform IO based ESP IDF
 
-The `main.c` is there to emphasize that it is not used at all in making Unit Tests. This is due to the spirit of testing is to test each individual component, regardless of the main logic. Hence, here we want to test out AppLight.hpp, which consists of an abstraction of the LED_BUILTIN in which by using the DOIT ESP32 DEVKIT V1, it will be on GPIO2.
+This codebase is a simple example on how to do automated testing directly in PlatformIO, for ESP IDF based development.
 
-## Start here
+> The `main.c` is there to emphasize that it is not used at all in making Unit Tests. This is due to the spirit of testing is to test each individual component, regardless of the main logic. Hence, here we want to test out AppLight.hpp, which consists of an abstraction of the LED_BUILTIN in which by using the DOIT ESP32 DEVKIT V1, it will be on GPIO2.
+
+## Get Started
 - Install VSCode
 - Install Platform IO (PIO) Extension in VSCode
 - Open the platform.ini file, let PIO to load and install the required platform
@@ -23,4 +25,4 @@ The `main.c` is there to emphasize that it is not used at all in making Unit Tes
 
 ---
 ## Disclaimer
-I did not write this code by my own, it is from [PacktPublishing - Developing IoT Projects with ESP32 2nd edition](https://github.com/PacktPublishing/Developing-IoT-Projects-with-ESP32-2nd-edition) :octocat:
+I did not write this code by my own, it is from [PacktPublishing - Developing IoT Projects with ESP32 2nd edition](https://github.com/PacktPublishing/Developing-IoT-Projects-with-ESP32-2nd-edition) :octocat:. I made minor changes mainly to divert from the initial target which is directed for ESP32S3 to a ESP32
