@@ -23,4 +23,4 @@ The `main.c` is there to emphasize that it is not used at all in making Unit Tes
 
 ---
 ## Disclaimer
-I did not write this code by my own, it is from ![:octocat: PacktPublishing - Developing IoT Projects with ESP32 2nd edition](https://github.com/PacktPublishing/Developing-IoT-Projects-with-ESP32-2nd-edition)
+I did not write this code by my own, it is from :octocat: ![PacktPublishing - Developing IoT Projects with ESP32 2nd edition](https://github.com/PacktPublishing/Developing-IoT-Projects-with-ESP32-2nd-edition)
