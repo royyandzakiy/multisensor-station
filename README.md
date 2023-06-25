@@ -2,15 +2,16 @@
 
 This codebase is a simple example on how to do automated testing directly in PlatformIO, for ESP IDF based development.
 
-> The `main.c` is there to emphasize that it is not used at all in making Unit Tests. This is due to the spirit of testing is to test each individual component, regardless of the main logic. Hence, here we want to test out AppLight.hpp, which consists of an abstraction of the LED_BUILTIN in which by using the DOIT ESP32 DEVKIT V1, it will be on GPIO2.
+> The `main.c` is completely empty, but still there to emphasize that it is NOT NEEDED AT ALL to run Unit Tests. This is due to the spirit of testing is to test each individual component seperately, regardless of the `app_main()` logic. Hence, here we want to test out `AppLight.hpp`, which consists of an abstraction of the `LED_BUILTIN` on the DOIT ESP32 DEVKIT V1 (it will be on `GPIO2`).
 
 ## Get Started
-- Install VSCode
-- Install Platform IO (PIO) Extension in VSCode
-- Open the platform.ini file, let PIO to load and install the required platform
-    - This will take time, because (if not yet) you need to download the whole ESP IDF SDK, through the choice of platform, in this case is `espressif32@5.3.0`. I had specifically specified the version 5.3.0, because I tried the current latest version, which is 6.2.0, and it keeps on failing to compile with a certain error. Hence, I specified an older version which actually works
-    - After the PIO Task of Downloading the platform is done, usually it does another task, to "Configure project"
-- Open the PlatformIO tab, the image like below shall show up
+- Install [VSCode](https://code.visualstudio.com/download)
+- Install PlatformIO (PIO) Extension in VSCode
+    - Go to `Extensions` on the left side bar, search for PlatformIO
+- Open the `platform.ini` file, let PIO to load and install the required platform (espressif32@5.3.0)
+    - This will take some time, because (if not yet) you need to download the whole choice of platform, in this case is `espressif32@5.3.0` (in which already has ESP IDF within). I had specified to use the version `5.3.0`, because I tried the current latest version, which is `6.2.0`, and it keeps on failing to compile with a certain error. Hence, I specified an older version which actually works
+    - After the PIO Task of Downloading the platform is done, usually it does another PIO task, which is to "Configure project". Just wait for another while, after done, continue to the next step
+- Open the PlatformIO tab, the image like below will show up (if not yet, just try opening up the `platform.ini` file again, it sometimes fail to load)
     ![](docs/project-tasks.png)
     - `General` > `Build` Just wait until it successfully to Builds
         ![](docs/success-build.png)
