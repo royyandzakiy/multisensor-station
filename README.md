@@ -20,3 +20,7 @@ The `main.c` is there to emphasize that it is not used at all in making Unit Tes
         ```
         - Press the reset button on the ESP32, then the Unit Test will run, the `LED_BUILTIN` will flash really briefly, and this final success test message will popup
         ![](docs/success-test.png)
+
+---
+## Disclaimer
+I did not write this code by my own, it is from ![:octocat: PacktPublishing - Developing IoT Projects with ESP32 2nd edition](https://github.com/PacktPublishing/Developing-IoT-Projects-with-ESP32-2nd-edition)
