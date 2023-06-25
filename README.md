@@ -12,6 +12,7 @@ This codebase is a simple example on how to do automated testing directly in Pla
     - This will take some time, because (if not yet) you need to download the whole choice of platform, in this case is `espressif32@5.3.0` (in which already has ESP IDF within). I had specified to use the version `5.3.0`, because I tried the current latest version, which is `6.2.0`, and it keeps on failing to compile with a certain error. Hence, I specified an older version which actually works
     - After the PIO Task of Downloading the platform is done, usually it does another PIO task, which is to "Configure project". Just wait for another while, after done, continue to the next step
 - Open the PlatformIO tab, the image like below will show up (if not yet, just try opening up the `platform.ini` file again, it sometimes fail to load)
+    
     ![](docs/project-tasks.png)
     - `General` > `Build` Just wait until it successfully to Builds
         ![](docs/success-build.png)
