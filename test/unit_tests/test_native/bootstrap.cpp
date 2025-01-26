@@ -8,3 +8,8 @@ TEST(BasicTest, StringCheck) {
     std::string hello = "Hello, PlatformIO!";
     EXPECT_EQ(hello, "Hello, PlatformIO!");
 }
+
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
