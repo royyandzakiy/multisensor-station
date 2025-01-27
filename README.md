@@ -2,13 +2,38 @@
 
 This codebase is a simple example on how to do automated testing directly in PlatformIO, for ESP IDF based development.
 
-> The `main.c` is completely empty, but still there to emphasize that it is NOT NEEDED AT ALL to run Unit Tests. This is due to the spirit of testing is to test each individual component seperately, regardless of the `app_main()` logic. Hence, here we want to test out `AppLight.hpp`, which consists of an abstraction of the `LED_BUILTIN` on the DOIT ESP32 DEVKIT V1 (it will be on `GPIO2`).
+> The `main.cpp` doesn't really matter, it is NOT NEEDED AT ALL to run Unit Tests. This is due to the spirit of testing is to test each individual component seperately, regardless of the `app_main()` logic. Hence, here we want to test out `AppLight.hpp`, which consists of an abstraction of the `LED_BUILTIN` on the DOIT ESP32 DEVKIT V1 (it will be on `GPIO2`).
 
-## Get Started
+## Getting Started
 - Install [VSCode](https://code.visualstudio.com/download)
 - Install PlatformIO (PIO) Extension in VSCode
     - Go to `Extensions` on the left side bar, search for PlatformIO
-- Choose which `env` (environment) you are trying to run
+- Install tools for build (windows version, for other OS, find them yourself 😛) -- if not isntalled properly, will later cause PlatformIO to fail to run `build` or `test`
+    - Install Chocolatey
+        ```powershell
+        Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        ```
+    - Install MinGW
+        ```powershell
+        choco install mingw -y
+        gcc --version
+        ```
+    - Install Make
+        ```powershell
+        choco install make -y
+        make --version
+        ```
+    - Add MinGW and Make to PATH (if not automatically added)
+        - Sometimes, Chocolatey may not automatically add the installed tools to your system PATH. You can manually add them if needed.
+        - Find your Chocolatey, MinGW, Make location. add them to the Path in System Variables, for me it's these
+            ```
+            C:\ProgramData\chocolatey\bin
+            C:\Program Files\CMake\bin
+            C:\ProgramData\mingw64\mingw64\bin
+            ```
+            ![system-environment-variables](docs/system-environment-variables.png)
+
+- Choose which platform io `env` (environment) you want to run
     - here we can see there are 3 types of environments that I have prepared
         1) `env:esp32`: application to build & flash. this is the default environment which is meant for development and production
         2) `env:unit_tests__xxxx`: unit testing suite/on desktop/native tests. these are an array of unit testing suites dedicated to for quick response tests. it is defined however you define through `test_filter` and `test_ignore`. DO NOT build this environment, it will do nothing. instead, it is dedicated for the `pio test -e unit_tests__xxxx -vvv` command, and all tests are expected to be run natively (obviously without needing for any development board plugged in because no flashing)
@@ -120,6 +145,9 @@ TEST(AddFunctionTest, should_return_sum_when_given_two_positive_numbers) {
         ![undefined reference](docs/undefined-reference.png)
 
     - source: [forum @ community.platformio.org](https://community.platformio.org/t/unit-tests-platformio-googletest-errors-linking/28529)
+
+### Unit Testing in ESP IDF (not Platform IO)
+- work in progress, checkout [royyandzakiy/unittesting-espidf-unity](https://github.com/royyandzakiy/unittesting-espidf-unity)
 
 ---
 ## Disclaimer
