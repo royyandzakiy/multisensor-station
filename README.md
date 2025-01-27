@@ -43,6 +43,7 @@ This codebase is a simple example on how to do automated testing directly in Pla
         1) `env:esp32`: application to build & flash. this is the default environment which is meant for development and production
         2) `env:unit_tests__xxxx`: unit testing suite/on desktop/native tests. these are an array of unit testing suites dedicated to for quick response tests. it is defined however you define through `test_filter` and `test_ignore`. DO NOT build this environment, it will do nothing. instead, it is dedicated for the `pio test -e unit_tests__xxxx -vvv` command, and all tests are expected to be run natively (obviously without needing for any development board plugged in because no flashing)
         3) `env:integration_tests__xxxx`: integration testing suite/on device tests. these are an array of integration tests expected to be long in response (need to flash first) tests. it is defined however you define through `test_filter` and `test_ignore`. DO NOT build this environment, it will do nothing. instead, it is dedicated for the `pio test -e unit_tests__xxxx -vvv` command, and will then do the flashing to the development board, and after it be flashed, the tests will run
+        3) `env:e2e_tests__xxxx`: end-to-end testing suite/on device tests. these are an array of end-to-end tests expected to be long in response (need to flash first) tests.
 
             ![choose environment](docs/environment.png)
 
@@ -109,8 +110,9 @@ TEST(AddFunctionTest, should_return_sum_when_given_two_positive_numbers) {
 ### Foldering
 - `lib`: for all components that are expected to be tested, make sure are placed here. components in `src/` are by default NOT seen in the test suite
 - `test`
-    - `integration_tests`: all tests that will be tested after flash. I named it as integration tests, because it will take a while to execute and verify
     - `unit_tests`: all tests that will be run natively in the desktop and are expected to run FAST. tests that fall into this category fits the name unit test, knowing that it will be fired rapidly during every incremental development. all platform specific components (esp idf, arduino) MUST be mocked!
+    - `integration_tests`: all tests that will be tested after flash. I named it as integration tests, because it will take a while to execute and verify
+    - `e2e_tests`: all tests that will be tested after flash and focus on real scenarios. I named it as integration tests, because it will take a while to execute and verify
 
 ### Platform.ini breakdown
 - common platform environments: add more platforms as needed
@@ -135,10 +137,18 @@ TEST(AddFunctionTest, should_return_sum_when_given_two_positive_numbers) {
     [env:unit_tests__test_component_name_or_cluster]
     ...
     ```
-- integration tests: a list of integrations tests. you can make different testing scenarios using real hardware with this
+- integration tests: a list of integrations tests. this focuses on tests that utilize real hardware and tests them as their own seperate tests, to verify hardware functionality to be as expected. you can make different testing scenarios using real hardware with this
     - it is recommended to further integrate the integration testing with a CI system, and utilize a testing dock for semi-permanently connected devices for better a integration testing experience
     ```
     ; -------- INTEGRATION TESTS ENVIRONMENTS --------
+    [env:integration_tests__test_esp32]
+
+    ```
+
+- end-to-end tests: a list of integrations tests. this focuses on tests that will use real life scenarios of usage, it would usually use multiple functions to serve an end-to-end scenario since the device get's turned on, until it perhaps sleeps or terminates it's state. 
+    - it is recommended to further integrate the integration testing with a CI system, and utilize a testing dock for semi-permanently connected devices for better a integration testing experience
+    ```
+    ; -------- END-TO-END TESTS ENVIRONMENTS --------
     [env:integration_tests__test_esp32]
 
     ```
