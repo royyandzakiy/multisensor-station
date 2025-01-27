@@ -110,9 +110,9 @@ TEST(AddFunctionTest, should_return_sum_when_given_two_positive_numbers) {
 ### Foldering
 - `lib`: for all components that are expected to be tested, make sure are placed here. components in `src/` are by default NOT seen in the test suite
 - `test`
-    - `unit_tests`: all tests that will be run natively in the desktop and are expected to run FAST. tests that fall into this category fits the name unit test, knowing that it will be fired rapidly during every incremental development. all platform specific components (esp idf, arduino) MUST be mocked!
-    - `integration_tests`: all tests that will be tested after flash. I named it as integration tests, because it will take a while to execute and verify
-    - `e2e_tests`: all tests that will be tested after flash and focus on real scenarios. I named it as integration tests, because it will take a while to execute and verify
+    - `unit_tests`: all unit tests running natively on desktop (off device)
+    - `integration_tests`: all tests that utilizes an external or platform based libraries/implementations, running on device (requires flashing)
+    - `e2e_tests`: all tests that runs an automated end-to-end real life usage scenarios, running on device (requires flashing)
 
 ### Platform.ini breakdown
 - common platform environments: add more platforms as needed
@@ -125,7 +125,7 @@ TEST(AddFunctionTest, should_return_sum_when_given_two_positive_numbers) {
     ...
     ```
 
-- unit test environments: a list of unit tests, you can tweak this to specify what tests should be run and not
+- unit test environments:  all tests that will be run natively in the desktop and are expected to run FAST. tests that fall into this category fits the name unit test, knowing that it will be fired rapidly during every incremental development. all platform specific components (esp idf, arduino) MUST be mocked!
     - to learn more, read [Platform IO Docs > Unit Testing > Test Hierarchy: Pizza Project Tests](https://docs.platformio.org/en/latest/advanced/unit-testing/structure/hierarchy.html)
     ```
     ; -------- UNIT TESTS ENVIRONMENTS --------
@@ -137,7 +137,7 @@ TEST(AddFunctionTest, should_return_sum_when_given_two_positive_numbers) {
     [env:unit_tests__test_component_name_or_cluster]
     ...
     ```
-- integration tests: a list of integrations tests. this focuses on tests that utilize real hardware and tests them as their own seperate tests, to verify hardware functionality to be as expected. you can make different testing scenarios using real hardware with this
+- integration tests: a list of integrations tests. this focuses on tests that utilize external or platform based libraries/implementations on real hardware and tests components as their own seperate tests, to verify hardware functionality to be as expected. you can make different testing scenarios using real hardware with this
     - it is recommended to further integrate the integration testing with a CI system, and utilize a testing dock for semi-permanently connected devices for better a integration testing experience
     ```
     ; -------- INTEGRATION TESTS ENVIRONMENTS --------
