@@ -161,6 +161,8 @@ TEST(AddFunctionTest, should_return_sum_when_given_two_positive_numbers) {
 
     - source: [forum @ community.platformio.org](https://community.platformio.org/t/unit-tests-platformio-googletest-errors-linking/28529)
 
+- do not utilize `build_type = test`, because it will let pio to do the testing without properly invoking gtest, therefore getting stuck (pio error) and the Test pio feature will be disabled. without this line, all runs fine
+
 ### Unit Testing in ESP IDF (not Platform IO)
 - work in progress, checkout [royyandzakiy/unittesting-espidf-unity](https://github.com/royyandzakiy/unittesting-espidf-unity)
 
