@@ -4,6 +4,11 @@ This codebase is a simple example on how to do automated testing directly in Pla
 
 > The `main.cpp` doesn't really matter, it is NOT NEEDED AT ALL to run Unit Tests. This is due to the spirit of testing is to test each individual component seperately, regardless of the `app_main()` logic. Hence, here we want to test out `AppLight.hpp`, which consists of an abstraction of the `LED_BUILTIN` on the DOIT ESP32 DEVKIT V1 (it will be on `GPIO2`).
 
+### Table of Content
+    ```
+    WIP
+    ```
+
 ## Getting Started
 - Install [VSCode](https://code.visualstudio.com/download)
 - Install PlatformIO (PIO) Extension in VSCode
