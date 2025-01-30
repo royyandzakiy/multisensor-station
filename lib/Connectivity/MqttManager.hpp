@@ -4,8 +4,9 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <esp_mqtt.h>
+#include <mqtt_client.h>
 #include <esp_log.h>
+#include <credentials.h>
 
 class MQTTController : public StatefulObject<std::string> {
 public:
@@ -49,7 +50,7 @@ private:
         };
 
         mqttClient = esp_mqtt_client_init(&mqtt_cfg);
-        esp_mqtt_client_register_event(mqttClient, ESP_EVENT_ANY_ID, &MQTTController::mqttEventHandler, this);
+        esp_mqtt_client_register_event(mqttClient, MQTT_EVENT_ANY, &MQTTController::mqttEventHandler, this);
         esp_mqtt_client_start(mqttClient);
         setState("CONNECTING");
 
