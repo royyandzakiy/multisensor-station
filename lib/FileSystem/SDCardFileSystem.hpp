@@ -9,7 +9,7 @@
 #include <vector>
 #include <system_error>
 
-static const char* TAG = "SDCardFS";
+#define TAG "SDCardFS"
 
 class SDCardFS {
 public:
