@@ -80,6 +80,6 @@ private:
 
     std::vector<std::string> logs;               // In-memory log storage
     std::vector<LogCallback> callbacks;          // Observer callbacks
-    std::mutex mtx;                              // Mutex for thread safety
+    mutable std::mutex mtx;                              // Mutex for thread safety
     static constexpr size_t logInterval = 10;    // Store logs every 10 entries
 };
