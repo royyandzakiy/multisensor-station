@@ -3,6 +3,7 @@
 ## Getting Started
 
 ## Development Notes
+- requirement & architecture
 - phase 1
     - patterns
     - connectivity
