@@ -2,6 +2,8 @@
 #include <vector>
 #include <memory>
 
+class Observable;
+
 class Observer {
 public:
     virtual void notify(std::weak_ptr<Observable> observable) = 0;
