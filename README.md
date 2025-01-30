@@ -7,16 +7,16 @@
 - phase 1
     - patterns
     - connectivity
-    - config
     - ota
     - logger
 - phase 2
     - sensor (dummy), circularbufferqueue, sensormanager
     - dataacquisitor
-    - filesystem (dummy)
+    - filesystem (spiffs)
 - phase 3
-    - filesystem (sdcard)
     - sensor (real)
+    - filesystem (sdcard)
+    - config
 
 ## Design
 ```markdown
