@@ -14,17 +14,17 @@
 #define BUTTON_GPIO GPIO_NUM_0
 #define TAG "OTA_UPDATE"
 
-class OtaManager : public StatefulObject<OtaManager::OtaState> {
-public:
-    enum class OtaState {
-        Idle,           // Device is idle, no OTA in progress
-        Checking,       // Checking for OTA updates
-        Downloading,    // Downloading the OTA firmware
-        Applying,       // Applying the OTA firmware
-        Success,        // OTA update successful
-        Failed          // OTA update failed
-    };
+enum class OtaState {
+    Idle,           // Device is idle, no OTA in progress
+    Checking,       // Checking for OTA updates
+    Downloading,    // Downloading the OTA firmware
+    Applying,       // Applying the OTA firmware
+    Success,        // OTA update successful
+    Failed          // OTA update failed
+};
 
+class OtaManager : public StatefulObject<OtaState> {
+public:
     OtaManager(const std::string& id)
         : StatefulObject<OtaState>(id, OtaState::Idle) {
         gpio_set_direction(BUTTON_GPIO, GPIO_MODE_INPUT);
