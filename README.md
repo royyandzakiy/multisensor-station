@@ -98,8 +98,8 @@
     - maxSize
 
 ### Logger
-- StateEventLogger
-    + StateEventLogger() {thread}, logStateChange(const string& id, const T& state), printLatestLogs()
+- EventLogger
+    + EventLogger() {thread}, logStateChange(const string& id, const T& state), printLatestLogs()
     - storeLogs(), std::string getCurrentTimestamp()
     - vector<string> logs, mutex mtx, thread storeLogsTask
 
@@ -132,7 +132,7 @@
 - Create system that enables multiple sensors, hardware wise, these sensors are not yet fixed so make it so that we can swap in new sensors every now and then
 - One sensor should never be a single point of failure, if one fails, the others should keep working reliably anytime; for debugging, make it easy to identify which sensor is problematic 
 - Most valuable thing is the sensor data, make sure the sensor data never unintentionally goes missing
-- Capture most important parts using a Stateful and StateEventLogger to later help with debugging
+- Capture most important parts using a Stateful and EventLogger to later help with debugging
 - Connectivty is by WiFi, it should be always active, but always mitigate if there are failures. If so, keep data (with each correct timestamps) for around X time, then flush aka retransmit the unsent data
 - System is monitorable and updatable (OTA) through fleet management cloud service
 - Create system with proper testing suites. Design such that it has good seperation of concerns and implement native C++20 code as much as possible

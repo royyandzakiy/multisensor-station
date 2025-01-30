@@ -25,10 +25,10 @@ enum class OtaState {
 
 class OtaManager : public StatefulObject<OtaState> {
 public:
-    OtaManager(const std::string& id)
-        : StatefulObject<OtaState>(id, OtaState::Idle) {
-        gpio_set_direction(BUTTON_GPIO, GPIO_MODE_INPUT);
-        gpio_set_pull_mode(BUTTON_GPIO, GPIO_PULLUP_ONLY);
+    // Get the singleton instance
+    static OtaManager& getInstance() {
+        static OtaManager instance("OTAManager");
+        return instance;
     }
 
     void start() {
@@ -49,6 +49,12 @@ public:
     }
 
 private:
+    OtaManager(const std::string& id)
+        : StatefulObject<OtaState>(id, OtaState::Idle) {
+        gpio_set_direction(BUTTON_GPIO, GPIO_MODE_INPUT);
+        gpio_set_pull_mode(BUTTON_GPIO, GPIO_PULLUP_ONLY);
+    }
+
     void monitorButton() {
         while (true) {
             if (gpio_get_level(BUTTON_GPIO) == 0) { // Button pressed

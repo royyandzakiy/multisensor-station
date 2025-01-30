@@ -8,7 +8,7 @@
 #include <esp_log.h>
 #include <credentials.h>
 
-class MQTTController : public StatefulObject<std::string> {
+class MqttManager : public StatefulObject<std::string> {
 public:
     enum class PublishResult {
         SUCCESS,
@@ -16,13 +16,23 @@ public:
         NOT_CONNECTED
     };
 
-    MQTTController()
-        : StatefulObject<std::string>("MQTTController", "DISCONNECTED") {
-        init();
+    // Get the singleton instance
+    static MqttManager& getInstance() {
+        static MqttManager instance;
+        return instance;
     }
 
-    ~MQTTController() {
-        stop();
+    void init() {
+        esp_mqtt_client_config_t mqtt_cfg = {
+            .uri = CONFIG_MQTT_BROKER_URI,
+        };
+
+        mqttClient = esp_mqtt_client_init(&mqtt_cfg);
+        esp_mqtt_client_register_event(mqttClient, MQTT_EVENT_ANY, &MqttManager::mqttEventHandler, this);
+        esp_mqtt_client_start(mqttClient);
+        setState("CONNECTING");
+
+        mqttThread = std::thread(&MqttManager::mqttTask, this);
     }
 
     PublishResult publish(const std::string& topic, const std::string& message) {
@@ -37,6 +47,16 @@ public:
         return PublishResult::SUCCESS;
     }
 
+    bool reconnect() {
+        // insert logic here later...
+        return true;
+    }
+
+    bool isConnected() {
+        // insert logic here later...
+        return true;
+    }
+
 private:
     std::thread mqttThread;
     std::mutex mtx;
@@ -44,17 +64,12 @@ private:
     bool running = true;
     esp_mqtt_client_handle_t mqttClient;
 
-    void init() {
-        esp_mqtt_client_config_t mqtt_cfg = {
-            .uri = CONFIG_MQTT_BROKER_URI,
-        };
+    MqttManager()
+        : StatefulObject<std::string>("MqttManager", "DISCONNECTED") {
+    }
 
-        mqttClient = esp_mqtt_client_init(&mqtt_cfg);
-        esp_mqtt_client_register_event(mqttClient, MQTT_EVENT_ANY, &MQTTController::mqttEventHandler, this);
-        esp_mqtt_client_start(mqttClient);
-        setState("CONNECTING");
-
-        mqttThread = std::thread(&MQTTController::mqttTask, this);
+    ~MqttManager() {
+        stop();
     }
 
     void stop() {
@@ -66,7 +81,7 @@ private:
     }
 
     static void mqttEventHandler(void* arg, esp_event_base_t base, int32_t event_id, void* event_data) {
-        auto* self = static_cast<MQTTController*>(arg);
+        auto* self = static_cast<MqttManager*>(arg);
         esp_mqtt_event_handle_t event = static_cast<esp_mqtt_event_handle_t>(event_data);
 
         switch (event->event_id) {

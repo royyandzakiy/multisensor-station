@@ -9,14 +9,14 @@
 #include <vector>
 #include <system_error>
 
-#define TAG "SDCardFS"
+#define TAG "SDCardFilesystem"
 
-class SDCardFS {
+class SDCardFilesystem {
 public:
-    SDCardFS() : card(nullptr), fs(WL_INVALID_HANDLE) {}
-
-    ~SDCardFS() {
-        unmount();
+    // Get the singleton instance
+    static SDCardFilesystem& getInstance() {
+        static SDCardFilesystem instance;
+        return instance;
     }
 
     bool mount() {
@@ -181,12 +181,18 @@ public:
     }
 
 private:
+    SDCardFilesystem() : card(nullptr), fs(WL_INVALID_HANDLE) {}
+
+    ~SDCardFilesystem() {
+        unmount();
+    }
+
     sdmmc_card_t* card;
     wl_handle_t fs;
 };
 
 void exampleMain() {
-    SDCardFS sdcard;
+    SDCardFilesystem& sdcard = SDCardFilesystem::getInstance();
 
     if (sdcard.mount()) {
         std::string filePath = "/sdcard/test.txt";

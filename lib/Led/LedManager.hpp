@@ -11,7 +11,7 @@
 #include <esp_log.h> // ESP-IDF Log driver
 #include <EventLogger.hpp> // ESP-IDF Log driver
 
-class LEDManager {
+class LedManager {
 public:
     enum class LEDColor {
         RED,
@@ -26,8 +26,8 @@ public:
     };
 
     // Get the singleton instance
-    static LEDManager& getInstance() {
-        static LEDManager instance;
+    static LedManager& getInstance() {
+        static LedManager instance;
         return instance;
     }
 
@@ -57,7 +57,7 @@ public:
     }
 
 private:
-    LEDManager() {
+    LedManager() {
         // Register a callback with EventLogger
         EventLogger::getInstance().registerCallback(
             [this](const std::string& id, const std::string& state) {
@@ -66,10 +66,10 @@ private:
         );
 
         // Start the LED blinking task
-        blinkingThread = std::thread(&LEDManager::blinkingTask, this);
+        blinkingThread = std::thread(&LedManager::blinkingTask, this);
     }
 
-    ~LEDManager() {
+    ~LedManager() {
         running = false;
         if (blinkingThread.joinable()) {
             blinkingThread.join();
@@ -77,8 +77,8 @@ private:
     }
 
     // Delete copy constructor and assignment operator
-    LEDManager(const LEDManager&) = delete;
-    LEDManager& operator=(const LEDManager&) = delete;
+    LedManager(const LedManager&) = delete;
+    LedManager& operator=(const LedManager&) = delete;
 
     // GPIO pins for LEDs
     const gpio_num_t redPin = GPIO_NUM_17;    // GPIO 17
@@ -103,20 +103,20 @@ private:
         {LEDColor::BLUE, 1000}
     };
 
-    static constexpr const char* TAG = "LEDManager";
+    static constexpr const char* TAG = "LedManager";
 
     // Process a log entry and update LED modes
     void processLog(const std::string& id, const std::string& state) {
         std::lock_guard<std::mutex> lock(mtx);
 
         // Define LED behavior based on id and state
-        if (id == "WiFiController") {
+        if (id == "WifiManager") {
             if (state == "CONNECTED") {
                 setLEDMode(LEDColor::GREEN, LEDMode::BLINK, 500); // Blink green LED every 500ms
             } else if (state == "DISCONNECTED") {
                 setLEDMode(LEDColor::GREEN, LEDMode::OFF);
             }
-        } else if (id == "MQTTController") {
+        } else if (id == "MqttManager") {
             if (state == "CONNECTED") {
                 setLEDMode(LEDColor::BLUE, LEDMode::BLINK, 1000); // Blink blue LED every 1000ms
             } else if (state == "DISCONNECTED") {
