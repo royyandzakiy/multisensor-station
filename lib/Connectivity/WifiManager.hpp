@@ -56,43 +56,45 @@ public:
         strncpy((char*)wifi_config.sta.ssid, CONFIG_WIFI_SSID, sizeof(wifi_config.sta.ssid));
         strncpy((char*)wifi_config.sta.password, CONFIG_WIFI_PASSWORD, sizeof(wifi_config.sta.ssid));
 
-        ESP_LOGI(WIFI_TAG, "wifi_config.sta.ssid: %s", wifi_config.sta.ssid);
-        ESP_LOGI(WIFI_TAG, "wifi_config.sta.password: %s", wifi_config.sta.password);
+        ESP_LOGI(TAG, "wifi_config.sta.ssid: %s", wifi_config.sta.ssid);
+        ESP_LOGI(TAG, "wifi_config.sta.password: %s", wifi_config.sta.password);
 
         ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
         ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
         ESP_ERROR_CHECK(esp_wifi_start());
 
-        // taskThread = std::thread(&WifiManager::task, this);
-        // std::thread(&WifiManager::reconnectTask, this).detach();
-        // taskThread = std::thread(&WifiManager::reconnectTask, this);
+        // wifiCheckThread = std::thread(&WifiManager::wifiCheckTask, this);
 
-        ESP_LOGI(WIFI_TAG, "WifiManager successfully initialized.");
+        ESP_LOGI(TAG, "WifiManager successfully initialized.");
+    }
+
+    bool isConnected() {
+        return getState() == wifiState_t::CONNECTED;
     }
 
 private:
     void reconnectTask() {
-        ESP_LOGI(WIFI_TAG, "reconnectTask Started");
+        ESP_LOGI(TAG, "reconnectTask Started");
 
         while (true) {
             std::unique_lock<std::mutex> lock(mtx);
             cv.wait(lock, [this] { return getState() == wifiState_t::DISCONNECTED; });
 
-            ESP_LOGI(WIFI_TAG, "Attempting to reconnect to Wi-Fi...");
+            ESP_LOGI(TAG, "Attempting to reconnect to Wi-Fi...");
 
             if (WifiManager::wifi_reconnect_count < ESP_WIFI_RECONNECT_ATTEMPT_MAXIMUM_RETRY) {
-                ESP_LOGI(WIFI_TAG, "Retry to connect to the AP");
+                ESP_LOGI(TAG, "Retry to connect to the AP");
                 ESP_ERROR_CHECK(esp_wifi_connect());    
                 wifi_reconnect_count++;
             } else {
                 xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
-                ESP_LOGI(WIFI_TAG, "Max reconnect attempt exceeded, will restart");
+                ESP_LOGI(TAG, "Max reconnect attempt exceeded, will restart");
                 esp_restart();
             }
 
             cv.wait_for(lock, std::chrono::seconds(10), [this] { return getState() == wifiState_t::CONNECTED; });
 
-            ESP_LOGI(WIFI_TAG, "Connection restored. ReconnectTask will now wait for the next disconnect event.");
+            ESP_LOGI(TAG, "Connection restored. ReconnectTask will now wait for the next disconnect event.");
         }
     }
 
@@ -102,14 +104,8 @@ private:
     }
 
     ~WifiManager() {
-        stop();
-    }
-
-    void stop() {
-        running = false;
-        cv.notify_all();
-        if (taskThread.joinable()) {
-            taskThread.join();
+        if (wifiCheckThread.joinable()) {
+            wifiCheckThread.join();
         }
     }
 
@@ -118,24 +114,24 @@ private:
         esp_err_t err = esp_wifi_sta_get_ap_info(&ap_info);
 
         if (err == ESP_OK) {
-            ESP_LOGI(WIFI_TAG, "SSID: %s", ap_info.ssid);
-            ESP_LOGI(WIFI_TAG, "RSSI: %d dBm", ap_info.rssi);
-            ESP_LOGI(WIFI_TAG, "Channel: %d", ap_info.primary);
-            ESP_LOGI(WIFI_TAG, "Authmode: %d", ap_info.authmode);
+            ESP_LOGI(TAG, "SSID: %s", ap_info.ssid);
+            ESP_LOGI(TAG, "RSSI: %d dBm", ap_info.rssi);
+            ESP_LOGI(TAG, "Channel: %d", ap_info.primary);
+            ESP_LOGI(TAG, "Authmode: %d", ap_info.authmode);
         } else {
-            ESP_LOGE(WIFI_TAG, "Failed to get AP info: %s", esp_err_to_name(err));
+            ESP_LOGE(TAG, "Failed to get AP info: %s", esp_err_to_name(err));
         }
     }
 
-    void task() {
-        ESP_LOGI(WIFI_TAG, "task Started");
-        while (running) {
+    void wifiCheckTask() {
+        ESP_LOGI(TAG, "task Started");
+        while (true) {
             std::unique_lock<std::mutex> lock(mtx);
             
             // Periodically check or perform actions here
             check_wifi_signal_strength();
 
-            ESP_LOGI(WIFI_TAG, "task running");
+            ESP_LOGI(TAG, "task running");
             cv.wait_for(lock, std::chrono::seconds(5));
         }
     }
@@ -148,7 +144,7 @@ private:
             ESP_ERROR_CHECK(esp_wifi_connect());
         } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
             self.setState(wifiState_t::DISCONNECTED);
-            ESP_LOGI(WIFI_TAG, "Connect to the AP fail/disconnected");
+            ESP_LOGI(TAG, "Connect to the AP fail/disconnected");
 
             // Notify the reconnectTask to start
             self.cv.notify_all();
@@ -156,7 +152,7 @@ private:
             self.setState(wifiState_t::CONNECTED);
 
             auto* event = static_cast<ip_event_got_ip_t*>(event_data);
-            ESP_LOGI(WIFI_TAG, "Got IP: " IPSTR, IP2STR(&event->ip_info.ip));
+            ESP_LOGI(TAG, "Got IP: " IPSTR, IP2STR(&event->ip_info.ip));
             wifi_reconnect_count = 0;
             xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
 
@@ -167,14 +163,13 @@ private:
 
     std::mutex mtx;
     std::condition_variable cv;
-    bool running = true;
-    static constexpr const char* WIFI_TAG = "WifiManager";
+    std::thread wifiCheckThread;
+
+    static constexpr const char* TAG = "WifiManager";
     static int wifi_reconnect_count;
     static EventGroupHandle_t s_wifi_event_group;
     static constexpr int WIFI_CONNECTED_BIT = BIT0;
     static constexpr int WIFI_FAIL_BIT = BIT1;    
-
-    std::thread taskThread;
 
     esp_event_handler_instance_t instance_any_id{};
     esp_event_handler_instance_t instance_got_ip{};

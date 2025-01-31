@@ -15,7 +15,7 @@
 constexpr const char* MAIN_TAG = "MAIN";
 
 int main() {
-    ESP_LOGI(MAIN_TAG, "Main Start");
+    ESP_LOGI(MAIN_TAG, "========= Main Start =========");
 
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -27,23 +27,11 @@ int main() {
     WifiManager& wifiManager = WifiManager::getInstance();
     wifiManager.init();
 
-    ESP_LOGI(MAIN_TAG, "Main End");
-#ifdef NOT_YET_DEVELOPED
-
-    while(wifiManager.getState() != wifiState_t::CONNECTED) {
-        ESP_LOGI(MAIN_TAG, "wifi not yet CONNECTED...");
-        vTaskDelay(1000);
-    };
     MqttManager& mqttManager = MqttManager::getInstance();
-    // while(WifiManager.)
     mqttManager.init();
-    if (!mqttManager.reconnect()) {
-        EventLogger::getInstance().logStateChange("MQTT", "Failed to connect");
-        // LedManager::getInstance().setLEDMode(LedManager::LEDColor::RED, LedManager::LEDMode::BLINK, 500);
-        return -1; // Exit if MQTT fails to connect
-    }
-    ESP_LOGI(MAIN_TAG, "mqtt manager done");
 
+    ESP_LOGI(MAIN_TAG, "========= Main End =========");
+#ifdef NOT_YET_DEVELOPED
 
     // Ensure Event Logger and LED Manager are running
     EventLogger::getInstance(); // Singleton initialization
