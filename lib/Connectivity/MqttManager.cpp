@@ -2,9 +2,9 @@
 
 void MqttManager::init() {
     esp_mqtt_client_config_t mqtt_cfg = {};
-    mqtt_cfg.host = CONFIG_MQTT_BROKER_SERVER;
-    mqtt_cfg.username = CONFIG_MQTT_BROKER_USERNAME;
-    mqtt_cfg.password = CONFIG_MQTT_BROKER_PASSWORD;
+    mqtt_cfg.host = MQTT_SERVER;
+    mqtt_cfg.username = MQTT_USERNAME;
+    mqtt_cfg.password = MQTT_PASSWORD;
     mqtt_cfg.port = 1883;
 
     client = esp_mqtt_client_init(&mqtt_cfg);

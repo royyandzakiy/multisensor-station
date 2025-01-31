@@ -16,6 +16,11 @@
 #include <../../src/credentials.h>
 #include <StatefulObject.hpp>
 
+/* MQTT configuration */
+constexpr auto MQTT_SERVER = CONFIG_MQTT_BROKER_SERVER;
+constexpr auto MQTT_USERNAME = CONFIG_MQTT_BROKER_USERNAME;
+constexpr auto MQTT_PASSWORD = CONFIG_MQTT_BROKER_PASSWORD;
+
 enum class mqttState_t {
     NOT_INITIALIZED,
     DISCONNECTED,
