@@ -9,7 +9,7 @@
 #include <vector>
 #include <system_error>
 
-inline constexpr const char* TAG = "SDCardFilesystem";
+constexpr const char* SD_TAG = "SDCardFilesystem";
 
 class SDCardFilesystem {
 public:
@@ -42,10 +42,10 @@ public:
 
         if (ret != ESP_OK) {
             if (ret == ESP_FAIL) {
-                ESP_LOGE(TAG, "Failed to mount filesystem. "
+                ESP_LOGE(SD_TAG, "Failed to mount filesystem. "
                          "If you want the card to be formatted, set format_if_mount_failed = true.");
             } else {
-                ESP_LOGE(TAG, "Failed to initialize the card (%s). "
+                ESP_LOGE(SD_TAG, "Failed to initialize the card (%s). "
                          "Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
             }
             return false;
@@ -59,7 +59,7 @@ public:
     void unmount() {
         if (fs) {
             esp_vfs_fat_sdmmc_unmount();
-            ESP_LOGI(TAG, "Card unmounted");
+            ESP_LOGI(SD_TAG, "Card unmounted");
             fs = WL_INVALID_HANDLE;
             card = nullptr;
         }
@@ -68,12 +68,12 @@ public:
     bool writeFile(const std::string& path, const std::string& data) {
         std::ofstream file(path);
         if (!file.is_open()) {
-            ESP_LOGE(TAG, "Failed to open file for writing: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to open file for writing: %s", path.c_str());
             return false;
         }
         file << data;
         if (file.fail()) {
-            ESP_LOGE(TAG, "Failed to write data to file: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to write data to file: %s", path.c_str());
             file.close();
             return false;
         }
@@ -84,12 +84,12 @@ public:
     std::string readFile(const std::string& path) {
         std::ifstream file(path);
         if (!file.is_open()) {
-            ESP_LOGE(TAG, "Failed to open file for reading: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to open file for reading: %s", path.c_str());
             return "";
         }
         std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
         if (file.fail() && !file.eof()) {
-            ESP_LOGE(TAG, "Failed to read data from file: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to read data from file: %s", path.c_str());
             file.close();
             return "";
         }
@@ -99,7 +99,7 @@ public:
 
     bool deleteFile(const std::string& path) {
         if (remove(path.c_str()) != 0) {
-            ESP_LOGE(TAG, "Failed to delete file: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to delete file: %s", path.c_str());
             return false;
         }
         return true;
@@ -109,12 +109,12 @@ public:
     bool appendLine(const std::string& path, const std::string& line) {
         std::ofstream file(path, std::ios::app); // Open in append mode
         if (!file.is_open()) {
-            ESP_LOGE(TAG, "Failed to open file for appending: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to open file for appending: %s", path.c_str());
             return false;
         }
         file << line << "\n"; // Append the line with a newline character
         if (file.fail()) {
-            ESP_LOGE(TAG, "Failed to append data to file: %s (possibly out of space)", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to append data to file: %s (possibly out of space)", path.c_str());
             file.close();
             return false;
         }
@@ -126,13 +126,13 @@ public:
     std::string readFirstLine(const std::string& path) {
         std::ifstream file(path);
         if (!file.is_open()) {
-            ESP_LOGE(TAG, "Failed to open file for reading: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to open file for reading: %s", path.c_str());
             return "";
         }
         std::string line;
         std::getline(file, line); // Read the first line
         if (file.fail() && !file.eof()) {
-            ESP_LOGE(TAG, "Failed to read first line from file: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to read first line from file: %s", path.c_str());
             file.close();
             return "";
         }
@@ -144,7 +144,7 @@ public:
     bool removeFirstLine(const std::string& path) {
         std::ifstream file(path);
         if (!file.is_open()) {
-            ESP_LOGE(TAG, "Failed to open file for reading: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to open file for reading: %s", path.c_str());
             return false;
         }
 
@@ -156,7 +156,7 @@ public:
             lines.push_back(line);
         }
         if (file.fail() && !file.eof()) {
-            ESP_LOGE(TAG, "Failed to read lines from file: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to read lines from file: %s", path.c_str());
             file.close();
             return false;
         }
@@ -165,13 +165,13 @@ public:
         // Write the remaining lines back to the file
         std::ofstream outFile(path);
         if (!outFile.is_open()) {
-            ESP_LOGE(TAG, "Failed to open file for writing: %s", path.c_str());
+            ESP_LOGE(SD_TAG, "Failed to open file for writing: %s", path.c_str());
             return false;
         }
         for (const auto& l : lines) {
             outFile << l << "\n";
             if (outFile.fail()) {
-                ESP_LOGE(TAG, "Failed to write data to file: %s (possibly out of space)", path.c_str());
+                ESP_LOGE(SD_TAG, "Failed to write data to file: %s (possibly out of space)", path.c_str());
                 outFile.close();
                 return false;
             }
@@ -199,36 +199,36 @@ void exampleMain() {
 
         // Append lines to the file
         if (!sdcard.appendLine(filePath, "First line")) {
-            ESP_LOGE(TAG, "Failed to append line to file");
+            ESP_LOGE(SD_TAG, "Failed to append line to file");
         }
         if (!sdcard.appendLine(filePath, "Second line")) {
-            ESP_LOGE(TAG, "Failed to append line to file");
+            ESP_LOGE(SD_TAG, "Failed to append line to file");
         }
         if (!sdcard.appendLine(filePath, "Third line")) {
-            ESP_LOGE(TAG, "Failed to append line to file");
+            ESP_LOGE(SD_TAG, "Failed to append line to file");
         }
 
         // Read the first line
         std::string firstLine = sdcard.readFirstLine(filePath);
         if (firstLine.empty()) {
-            ESP_LOGE(TAG, "Failed to read first line from file");
+            ESP_LOGE(SD_TAG, "Failed to read first line from file");
         } else {
-            ESP_LOGI(TAG, "First line: %s", firstLine.c_str());
+            ESP_LOGI(SD_TAG, "First line: %s", firstLine.c_str());
         }
 
         // Remove the first line
         if (!sdcard.removeFirstLine(filePath)) {
-            ESP_LOGE(TAG, "Failed to remove first line from file");
+            ESP_LOGE(SD_TAG, "Failed to remove first line from file");
         } else {
-            ESP_LOGI(TAG, "First line removed");
+            ESP_LOGI(SD_TAG, "First line removed");
         }
 
         // Read the updated first line
         firstLine = sdcard.readFirstLine(filePath);
         if (firstLine.empty()) {
-            ESP_LOGE(TAG, "Failed to read new first line from file");
+            ESP_LOGE(SD_TAG, "Failed to read new first line from file");
         } else {
-            ESP_LOGI(TAG, "New first line: %s", firstLine.c_str());
+            ESP_LOGI(SD_TAG, "New first line: %s", firstLine.c_str());
         }
 
         sdcard.unmount();

@@ -12,13 +12,11 @@
 // #include <Sensor.hpp>
 // #include <SDCardFileSystem.hpp>
 
-namespace Main {
-
-// constexpr const char* TAG = "MAIN";
+constexpr const char* MAIN_TAG = "MAIN";
 
 int main() {
     // Initialize Wi-Fi
-    ESP_LOGI(TAG, "main start");
+    ESP_LOGI(MAIN_TAG, "main start");
     //Initialize NVS
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -33,11 +31,11 @@ int main() {
     //     // LedManager::getInstance().setLEDMode(LedManager::LEDColor::RED, LedManager::LEDMode::BLINK, 500);
     //     return -1; // Exit if Wi-Fi fails to connect
     // }
-    ESP_LOGI(TAG, "wifi manager done");
+    ESP_LOGI(MAIN_TAG, "wifi manager done");
 
     // Initialize MQTT
     while(wifiManager.getState() != WIFI_EVENT_STA_CONNECTED) {
-        ESP_LOGI(TAG, "wifi not yet connected...");
+        ESP_LOGI(MAIN_TAG, "wifi not yet connected...");
         vTaskDelay(1000);
     };
 
@@ -49,7 +47,7 @@ int main() {
         // LedManager::getInstance().setLEDMode(LedManager::LEDColor::RED, LedManager::LEDMode::BLINK, 500);
         return -1; // Exit if MQTT fails to connect
     }
-    ESP_LOGI(TAG, "mqtt manager done");
+    ESP_LOGI(MAIN_TAG, "mqtt manager done");
 
     // // Ensure Event Logger and LED Manager are running
     // EventLogger::getInstance(); // Singleton initialization
@@ -117,5 +115,4 @@ int main() {
 
 extern "C" void app_main() {
     main();
-}
 }

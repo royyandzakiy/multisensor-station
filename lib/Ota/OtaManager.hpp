@@ -12,7 +12,7 @@
 #include <StatefulObject.hpp>
 
 #define BUTTON_GPIO GPIO_NUM_0
-inline constexpr const char* TAG = "OTA_UPDATE";
+constexpr const char* OTA_TAG = "OTA_UPDATE";
 
 enum class OtaState {
     Idle,           // Device is idle, no OTA in progress
@@ -43,7 +43,7 @@ public:
         // Main application loop
         while (true) {
             // Simulate normal operation
-            ESP_LOGI(TAG, "Main application running...");
+            ESP_LOGI(OTA_TAG, "Main application running...");
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
@@ -58,7 +58,7 @@ private:
     void monitorButton() {
         while (true) {
             if (gpio_get_level(BUTTON_GPIO) == 0) { // Button pressed
-                ESP_LOGI(TAG, "Button pressed, entering OTA mode...");
+                ESP_LOGI(OTA_TAG, "Button pressed, entering OTA mode...");
                 enterOtaMode();
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -67,7 +67,7 @@ private:
 
     void enterOtaMode() {
         if (getState() != OtaState::Idle) {
-            ESP_LOGW(TAG, "OTA already in progress.");
+            ESP_LOGW(OTA_TAG, "OTA already in progress.");
             return;
         }
 
@@ -80,7 +80,7 @@ private:
                 // Simulate checking for OTA updates from ThingsBoard
                 bool otaAvailable = checkOtaAvailability();
                 if (otaAvailable) {
-                    ESP_LOGI(TAG, "OTA update available, starting update...");
+                    ESP_LOGI(OTA_TAG, "OTA update available, starting update...");
                     enterOtaMode();
                 }
             }
@@ -110,10 +110,10 @@ private:
         esp_err_t ret = esp_https_ota(&config);
         if (ret == ESP_OK) {
             setState(OtaState::Success);
-            ESP_LOGI(TAG, "OTA update successful, restarting...");
+            ESP_LOGI(OTA_TAG, "OTA update successful, restarting...");
         } else {
             setState(OtaState::Failed);
-            ESP_LOGE(TAG, "OTA update failed, restarting...");
+            ESP_LOGE(OTA_TAG, "OTA update failed, restarting...");
         }
 
         // Restart the device

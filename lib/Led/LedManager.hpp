@@ -11,7 +11,7 @@
 #include <esp_log.h> // ESP-IDF Log driver
 #include <EventLogger.hpp> // ESP-IDF Log driver
 
-inline constexpr const char* TAG = "LedManager";
+constexpr const char* LED_TAG = "LedManager";
 
 class LedManager {
 public:
@@ -44,7 +44,7 @@ public:
         io_conf.pull_up_en = GPIO_PULLUP_DISABLE;     // Disable pull-up
         gpio_config(&io_conf);
 
-        ESP_LOGI(TAG, "LED GPIOs initialized");
+        ESP_LOGI(LED_TAG, "LED GPIOs initialized");
     }
 
     // Set the mode (off, on, blink) of an LED
@@ -52,7 +52,7 @@ public:
         std::lock_guard<std::mutex> lock(mtx);
         ledModes[color] = mode;
         ledIntervals[color] = intervalMs;
-        ESP_LOGI(TAG, "Set %s LED to %s with interval %d ms", getColorName(color).c_str(), getModeName(mode).c_str(), intervalMs);
+        ESP_LOGI(LED_TAG, "Set %s LED to %s with interval %d ms", getColorName(color).c_str(), getModeName(mode).c_str(), intervalMs);
 
         // Immediately update the LED state
         updateLEDState(color);
