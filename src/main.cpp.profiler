@@ -1,0 +1,45 @@
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <esp_log.h>
+#include <TaskProfiler.hpp>
+
+TaskProfilerMonitor profiler;
+
+void exampleTask(void* pvParameters) {
+    TaskHandle_t task_handle = xTaskGetCurrentTaskHandle();
+    profiler.start_profiling(task_handle, "example_task");
+
+    while (true) {
+        // Simulate some work
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+
+    profiler.stop_profiling(task_handle);
+}
+
+extern "C" void app_main() {
+    // Create an example task
+    xTaskCreate(&exampleTask, "example_task", 2048, nullptr, 5, nullptr);
+
+    // Save initial snapshots
+    TaskHandle_t example_task_handle = xTaskGetHandle("example_task");
+    profiler.save_single_task_snapshot(example_task_handle);
+    profiler.save_app_snapshot();
+
+    while (true) {
+        // Print task stats every 5 seconds
+        profiler.print_results();
+
+        // Print differences
+        profiler.print_single_task_diff(example_task_handle);
+        profiler.print_app_diff();
+
+        // Monitor and optimize heap and stack
+        profiler.monitor_heap();
+        profiler.optimize_heap();
+        profiler.monitor_stack(example_task_handle);
+        profiler.optimize_stack(example_task_handle);
+
+        vTaskDelay(pdMS_TO_TICKS(5000));
+    }
+}

@@ -65,7 +65,8 @@ void TaskProfilerMonitor::print_table_header() {
 }
 
 void TaskProfilerMonitor::print_table_row(const TaskStats& stats) {
-    ESP_LOGI(TAG, "| %-20s | %-14lld | %-14lu | %-14lu | %-14zu |",
+    // ESP_LOGI(TAG, "| %-20s | %-14lld | %-14lu | %-14lu | %-14zu |",
+    ESP_LOGI(TAG, "| %zu | %zu | %zu | %zu | %zu |",
              stats.name.c_str(), stats.execution_time.count(), stats.cpu_usage, stats.stack_high_water_mark, stats.heap_free);
 }
 
