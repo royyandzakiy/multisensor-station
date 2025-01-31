@@ -21,12 +21,6 @@ enum class mqttState_t {
 
 class MqttManager : public StatefulObject<mqttState_t> {
 public:
-    enum class mqttPublishResult_t {
-        SUCCESS,
-        ERROR_FAILED,
-        ERROR_NOT_CONNECTED
-    };
-
     static MqttManager& getInstance() {
         static MqttManager instance; // Get the singleton instance
         return instance;
@@ -44,20 +38,37 @@ public:
         esp_mqtt_client_start(client);
     }
 
-    mqttPublishResult_t publish(const std::string& topic, const std::string& message) {
-        if (!isConnected()) {
-            return mqttPublishResult_t::ERROR_NOT_CONNECTED;
-        }
-
-        int msg_id = esp_mqtt_client_publish(client, topic.c_str(), message.c_str(), 0, 1, 0);
-        if (msg_id == -1) {
-            return mqttPublishResult_t::ERROR_FAILED;
-        }
-        return mqttPublishResult_t::SUCCESS;
-    }
-
     bool isConnected() {
         return getState() == mqttState_t::CONNECTED;
+    }
+
+    
+    int publish(esp_mqtt_client_handle_t client, const std::string& topic, const std::string& data) {
+        int msg_id;
+        if (!isConnected()) {
+            ESP_LOGI(TAG, "MQTT not connected, fail to publish message");
+            msg_id = -1;
+        }
+        
+        msg_id = esp_mqtt_client_publish(client, topic.c_str(), data.c_str(), 0, 1, 0);
+        if (msg_id == -1) {
+            ESP_LOGI(TAG, "Failed to publish message, msg_id=%d", msg_id);
+        }
+
+        ESP_LOGI(TAG, "Sent publish successful, msg_id=%d", msg_id);
+        return msg_id;
+    }
+
+    int subscribe(esp_mqtt_client_handle_t client, const std::string& topic) {
+        int msg_id = esp_mqtt_client_subscribe(client, topic.c_str(), 1);
+        ESP_LOGI(TAG, "Sent subscribe successful, msg_id=%d", msg_id);
+        return msg_id;
+    }
+
+    int unsubscribe(esp_mqtt_client_handle_t client, const std::string& topic) {
+        int msg_id = esp_mqtt_client_unsubscribe(client, topic.c_str());
+        ESP_LOGI(TAG, "Sent unsubscribe successful, msg_id=%d", msg_id);
+        return msg_id;
     }
 
 private:
@@ -85,10 +96,14 @@ private:
             case MQTT_EVENT_CONNECTED:
                 self.setState(mqttState_t::CONNECTED);
                 ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-                self.publish_message(client, "/topic/qos1", "data_3", 1);
-                self.subscribe_to_topic(client, "/topic/qos0", 0);
-                self.subscribe_to_topic(client, "/topic/qos1", 1);
-                self.unsubscribe_from_topic(client, "/topic/qos1");
+                
+                {
+                    // test
+                    self.publish(client, "/topic/qos1", "data_3");
+                    self.subscribe(client, "/topic/qos1");
+                    self.unsubscribe(client, "/topic/qos1");
+                }
+
                 break;
 
             case MQTT_EVENT_DISCONNECTED:
@@ -98,7 +113,12 @@ private:
 
             case MQTT_EVENT_SUBSCRIBED:
                 ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
-                self.publish_message(client, "/topic/qos0", "data", 0);
+                
+                {
+                    // test
+                    self.publish(client, "/topic/qos1", "data");
+                }
+
                 break;
 
             case MQTT_EVENT_UNSUBSCRIBED:
@@ -129,21 +149,6 @@ private:
                 ESP_LOGI(TAG, "Other event id:%d", event->event_id);
                 break;
         }
-    }
-
-    void publish_message(esp_mqtt_client_handle_t client, const std::string& topic, const std::string& data, int qos) {
-        int msg_id = esp_mqtt_client_publish(client, topic.c_str(), data.c_str(), 0, qos, 0);
-        ESP_LOGI(TAG, "Sent publish successful, msg_id=%d", msg_id);
-    }
-
-    void subscribe_to_topic(esp_mqtt_client_handle_t client, const std::string& topic, int qos) {
-        int msg_id = esp_mqtt_client_subscribe(client, topic.c_str(), qos);
-        ESP_LOGI(TAG, "Sent subscribe successful, msg_id=%d", msg_id);
-    }
-
-    void unsubscribe_from_topic(esp_mqtt_client_handle_t client, const std::string& topic) {
-        int msg_id = esp_mqtt_client_unsubscribe(client, topic.c_str());
-        ESP_LOGI(TAG, "Sent unsubscribe successful, msg_id=%d", msg_id);
     }
 
     std::mutex mtx;
