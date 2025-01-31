@@ -11,6 +11,8 @@
 #include <esp_log.h> // ESP-IDF Log driver
 #include <EventLogger.hpp> // ESP-IDF Log driver
 
+inline constexpr const char* TAG = "LedManager";
+
 class LedManager {
 public:
     enum class LEDColor {
@@ -102,8 +104,6 @@ private:
         {LEDColor::GREEN, 1000},
         {LEDColor::BLUE, 1000}
     };
-
-    static constexpr const char* TAG = "LedManager";
 
     // Process a log entry and update LED modes
     void processLog(const std::string& id, const std::string& state) {

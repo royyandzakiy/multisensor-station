@@ -7,8 +7,11 @@
 - phase 1
     - patterns
     - connectivity
-    - ota
+        - connect wifi & mqtt; publish to mqtt;
     - logger
+        - successfully logging state change of all statefulobject (bug of T type);
+    - reduce image size to be able for upload
+    - ota
 - phase 2
     - sensor (dummy), circularbufferqueue, sensormanager
     - dataacquisitor

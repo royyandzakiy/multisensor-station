@@ -12,7 +12,7 @@
 #include <StatefulObject.hpp>
 
 #define BUTTON_GPIO GPIO_NUM_0
-#define TAG "OTA_UPDATE"
+inline constexpr const char* TAG = "OTA_UPDATE";
 
 enum class OtaState {
     Idle,           // Device is idle, no OTA in progress

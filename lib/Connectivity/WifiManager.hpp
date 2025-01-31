@@ -12,8 +12,6 @@
 #include <StatefulObject.hpp>
 #include <credentials.h>
 
-// #define TAG "WIFI_MANAGER"
-
 // ROY: change to WifiState_t
 
 // static EventGroupHandle_t s_wifi_event_group;
@@ -44,13 +42,13 @@ static EventGroupHandle_t s_wifi_event_group;
 constexpr auto WIFI_CONNECTED_BIT = BIT0;
 constexpr auto WIFI_FAIL_BIT = BIT1;
 
-static constexpr const char* TAG = "WifiManager";
+extern constexpr const char* TAG;
 
 static int s_retry_num = 0;
 
 // stuff
 
-class WifiManager : public StatefulObject<std::string> {
+class WifiManager : public StatefulObject<wifi_event_t> {
 public:
     // Get the singleton instance
     static WifiManager& getInstance() {
@@ -161,7 +159,7 @@ public:
 
 private:
     WifiManager()
-        : StatefulObject<std::string>("WifiManager", "DISCONNECTED") {
+        : StatefulObject<wifi_event_t>("WifiManager", WIFI_EVENT_STA_DISCONNECTED) {
     }
 
     ~WifiManager() {
@@ -192,6 +190,9 @@ private:
     }
 
     static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
+        auto& self = WifiManager::getInstance();
+        // auto* wifiManager = static_cast<WifiManager*>(arg);
+
         if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
             esp_wifi_connect();
         } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
@@ -209,6 +210,7 @@ private:
             s_retry_num = 0;
             xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
         }
+        self.setState(static_cast<wifi_event_t>(event_id));
     }
 
     esp_event_handler_instance_t instance_any_id{};

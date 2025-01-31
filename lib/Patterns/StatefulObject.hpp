@@ -1,6 +1,8 @@
 #pragma once
 #include <Observer.hpp>
 
+#include <EventLogger.hpp>
+
 // Stateful Object Wrapper
 template <typename T>
 class StatefulObject: Observable {
@@ -12,7 +14,8 @@ public:
     void setState(const T& newState) {
         if (state != newState) {
             state = newState;
-            notifyObservers();
+            // notifyObservers();
+            // EventLogger::getInstance().logStateChange(id, state);
         }
     }
 

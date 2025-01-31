@@ -9,7 +9,7 @@
 #include <vector>
 #include <system_error>
 
-#define TAG "SDCardFilesystem"
+inline constexpr const char* TAG = "SDCardFilesystem";
 
 class SDCardFilesystem {
 public:
