@@ -8,7 +8,7 @@ void MqttManager::init() {
     mqtt_cfg.port = 1883;
 
     client = esp_mqtt_client_init(&mqtt_cfg);
-    esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, &MqttManager::mqtt_event_handler, this);
+    esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, &MqttManager::eventHandler, this);
     esp_mqtt_client_start(client);
 }
 
@@ -40,7 +40,7 @@ int MqttManager::unsubscribe(const std::string& topic) {
     return msg_id;
 }
 
-void MqttManager::mqtt_event_handler(void* handler_args, esp_event_base_t base, int32_t event_id, void* event_data) {
+void MqttManager::eventHandler(void* handler_args, esp_event_base_t base, int32_t event_id, void* event_data) {
     auto& self = MqttManager::getInstance();
     esp_mqtt_event_handle_t event = static_cast<esp_mqtt_event_handle_t>(event_data);
 

@@ -60,11 +60,11 @@ private:
         }
     }
 
-    void check_wifi_signal_strength();
+    void checkWifiSignalStrength();
 
     void wifiCheckTask();
 
-    static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
+    static void eventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
 
     std::mutex mtx;
     std::condition_variable cv;
