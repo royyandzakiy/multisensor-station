@@ -90,8 +90,7 @@ private:
                 esp_restart();
             }
 
-            // Wait until the connection is restored for a certain time, if still disconnected, go to sleep. else continue
-            cv.wait(lock, [this] { return getState() == wifiState_t::CONNECTED; }); // BUG: change this
+            cv.wait_for(lock, std::chrono::seconds(10), [this] { return getState() == wifiState_t::CONNECTED; });
 
             ESP_LOGI(WIFI_TAG, "Connection restored. ReconnectTask will now wait for the next disconnect event.");
         }
