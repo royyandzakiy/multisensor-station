@@ -5,9 +5,14 @@
 #include <mutex>
 #include <esp_log.h>
 
-// #define CB
-#ifdef CB
+#define CIRCULLAR_BUFFER_MAX_SIZE 10
+#define USE_CIRCULAR_BUFFER
+// #define USE_VECTOR
+
+#ifdef USE_CIRCULAR_BUFFER
 #include <CircularBuffer.hpp>
+#elif defined(USE_VECTOR)
+// include nothing
 #endif
 
 class EventLogger {
@@ -25,27 +30,36 @@ public:
         static char buffer[64];
         snprintf(buffer, sizeof(buffer), "[%s] %s -> %s", getCurrentTimestamp().c_str(), id.c_str(), state.c_str());
         ESP_LOGI(TAG, "%s", buffer);
-#ifdef CB
-        // logs.push(std::string(buffer));
-#else
+#ifdef USE_CIRCULAR_BUFFER
+        logs.push(std::string(buffer));
+
+        if (logs.is_max()) {
+            debug_printLatestLogs();
+        }
+#elif defined(USE_VECTOR)
         logs.push_back(std::string(buffer));
 #endif
 
         // Notify observers
-        for (const auto& callback : callbacks) {
-            callback(id, state);
-        }
+        // for (const auto& callback : callbacks) {
+        // for (int i=0; i<callbacks.size(); i++) {
+        //     auto& callback = callbacks[i];
+        //     callback(id, state);
+        // }
     }
 
     void registerCallback(const LogCallback& callback) {
         std::lock_guard<std::mutex> lock(mtx);
-        callbacks.push_back(callback);
+        callbacks.fill(callback);
     }
 
-    void debug_printLatestLogs() const {
+    void debug_printLatestLogs() {
         std::lock_guard<std::mutex> lock(mtx);
-        for (const auto& log : logs) {
-            ESP_LOGI(TAG, "%s", log.c_str());
+        for (std::size_t i = 0; i < logs.size(); ++i) {
+            const std::optional<std::string>& log = logs.at(i);
+            if (log.has_value()) {
+                ESP_LOGI(TAG, "%s", log.value().c_str());
+            }
         }
     }
 
@@ -66,12 +80,12 @@ private:
         return timestamp;
     }
 
-#ifdef CB
-    CircularBuffer<std::string, 10> logs;
-#else
+#ifdef USE_CIRCULAR_BUFFER
+    CircularBuffer<std::string, CIRCULLAR_BUFFER_MAX_SIZE> logs;
+#elif defined(USE_VECTOR)
     std::vector<std::string> logs;               // In-memory log storage
 #endif
-    std::vector<LogCallback> callbacks;          // Observer callbacks
+    std::array<LogCallback, 10> callbacks;          // Observer callbacks
     mutable std::mutex mtx;                              // Mutex for thread safety
     static constexpr size_t logInterval = 10;    // Store logs every 10 entries
     static constexpr const char* TAG = "EventLogger";
