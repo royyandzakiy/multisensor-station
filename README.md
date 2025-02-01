@@ -107,6 +107,8 @@
     + EventLogger() {thread}, logStateChange(const string& id, const T& state), printLatestLogs()
     - storeLogs(), std::string getCurrentTimestamp()
     - vector<string> logs, mutex mtx, thread storeLogsTask
+    > design thoughts:
+        - usecase to help debugging failures, it uses a limited circularbuffer and a fixed log buffer
 
 ### File System
 - SDCardFilesystem

@@ -3,46 +3,49 @@
 #include <vector>
 #include <string>
 #include <mutex>
+#include <esp_log.h>
 #include <iostream> // do not use
 #include <iomanip> // do not use
 #include <sstream> // do not use
+
+// #define CB
+#ifdef CB
+#include <CircularBuffer.hpp>
+#endif
 
 class EventLogger {
 public:
     using LogCallback = std::function<void(const std::string& id, const std::string& state)>;
 
-    // Get the singleton instance
     static EventLogger& getInstance() {
-        static EventLogger instance;
+        static EventLogger instance; // Get the singleton instance
         return instance;
     }
 
     // Log a state change
     void logStateChange(const std::string& id, const std::string& state) {
         std::lock_guard<std::mutex> lock(mtx);
-        std::stringstream ss;
-        ss << "[" << getCurrentTimestamp() << "] " << id << " -> " << state;
-        logs.push_back(ss.str());
+        static char buffer[64];
+        snprintf(buffer, sizeof(buffer), "[%s] %s -> %s", getCurrentTimestamp().c_str(), id.c_str(), state.c_str());
+        ESP_LOGI(TAG, "%s", buffer);
+#ifdef CB
+        // logs.push(std::string(buffer));
+#else
+        logs.push_back(std::string(buffer));
+#endif
 
         // Notify observers
         for (const auto& callback : callbacks) {
-            callback(id, ss.str());
-        }
-
-        // Store logs in intervals (e.g., every 10 logs)
-        if (logs.size() >= logInterval) {
-            storeLogs();
+            callback(id, state);
         }
     }
 
-    // Register a callback for log events
     void registerCallback(const LogCallback& callback) {
         std::lock_guard<std::mutex> lock(mtx);
         callbacks.push_back(callback);
     }
 
-    // Print the latest logs (non-performant, for debugging only)
-    void printLatestLogs() const {
+    void debug_printLatestLogs() const {
         std::lock_guard<std::mutex> lock(mtx);
         for (const auto& log : logs) {
             std::cout << log << std::endl;
@@ -51,35 +54,28 @@ public:
 
 private:
     EventLogger() = default; // Private constructor for Singleton
-    ~EventLogger() {
-        storeLogs(); // Ensure remaining logs are stored on destruction
-    }
+    ~EventLogger() {}
 
-    // Delete copy constructor and assignment operator
     EventLogger(const EventLogger&) = delete;
     EventLogger& operator=(const EventLogger&) = delete;
 
-    // Store logs to persistent storage (simulated here)
-    void storeLogs() {
-        // Simulate storing logs (e.g., to a file or database)
-        for (const auto& log : logs) {
-            // In a real implementation, this would write to a file or database
-            std::cout << "Storing log: " << log << std::endl;
-        }
-        logs.clear(); // Clear logs after storing
-    }
-
-    // Get the current timestamp as a string
     std::string getCurrentTimestamp() const {
-        auto now = std::chrono::system_clock::now();
-        auto in_time_t = std::chrono::system_clock::to_time_t(now);
-        std::stringstream ss;
-        ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
-        return ss.str();
+        // auto now = std::chrono::system_clock::now();
+        // auto in_time_t = std::chrono::system_clock::to_time_t(now);
+        // std::stringstream ss;
+        // ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+        // return ss.str();
+        std::string timestamp = "<timestamp_not_implemented>";
+        return timestamp;
     }
 
+#ifdef CB
+    CircularBuffer<std::string, 10> logs;
+#else
     std::vector<std::string> logs;               // In-memory log storage
+#endif
     std::vector<LogCallback> callbacks;          // Observer callbacks
     mutable std::mutex mtx;                              // Mutex for thread safety
     static constexpr size_t logInterval = 10;    // Store logs every 10 entries
+    static constexpr const char* TAG = "EventLogger";
 };

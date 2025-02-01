@@ -5,7 +5,7 @@
 template <typename T>
 class StatefulObject: public Observable {
 public:
-    StatefulObject(const std::string& id, T initialState)
+    StatefulObject(const std::string id, T initialState)
         : id(id), state(initialState) {}
 
     // Update the state and log the change
@@ -33,20 +33,17 @@ protected:
 template <typename T>
 class StatefulObjectLogged : public StatefulObject<T> {
 public:
-    StatefulObjectLogged(const std::string& id, T initialState): StatefulObject<T>(id, initialState) {}
+    StatefulObjectLogged(const std::string id, T initialState): StatefulObject<T>(id, initialState) {
+    }
 
     void setState(const T& newState) override {
         auto& logger = EventLogger::getInstance();
         if (this->state != newState) {
             this->state = newState;
             // this->notifyObservers();
-            // logger.logStateChange(this->id, this->getStateAsString());
+            logger.logStateChange(this->id, this->getStateAsString());
         }
     }
 
     virtual std::string getStateAsString() const = 0;
-
-private:
-    std::string id;  // Unique identifier for the object
-    T state;         // Current state
 };
