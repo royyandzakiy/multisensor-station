@@ -3,8 +3,8 @@
 #include <nvs_flash.h>
 
 #include <WifiManager.hpp>
-// #include <MqttManager.hpp>
-// #include <EventLogger.hpp>
+#include <MqttManager.hpp>
+#include <EventLogger.hpp>
 // #include <OtaManager.hpp>
 // #include <LedManager.hpp>
 // #include <SDCardFilesystem.hpp>
@@ -26,12 +26,12 @@ int main() {
 
     WifiManager& wifiManager = WifiManager::getInstance();
     wifiManager.init();
+    ESP_LOGI(MAIN_TAG, "========= Main End =========");
 #ifdef NOT_YET_DEVELOPED
 
     MqttManager& mqttManager = MqttManager::getInstance();
     mqttManager.init();
 
-    ESP_LOGI(MAIN_TAG, "========= Main End =========");
 
     // Ensure Event Logger and LED Manager are running
     EventLogger::getInstance(); // Singleton initialization

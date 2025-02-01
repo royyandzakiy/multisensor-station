@@ -34,19 +34,8 @@ enum class wifiState_t {
 
 class WifiManager : public StatefulObjectLogged<wifiState_t> {
 public:
-    std::string wifiStateToString(wifiState_t state) const {
-        switch (state) {
-            case wifiState_t::NOT_INITIALIZED: return "NOT_INITIALIZED";
-            case wifiState_t::DISCONNECTED: return "DISCONNECTED";
-            case wifiState_t::CONNECTING: return "CONNECTING";
-            case wifiState_t::CONNECTED: return "CONNECTED";
-            default: return "UNKNOWN";
-        }
-    }
-
-    // Get the singleton instance
     static WifiManager& getInstance() {
-        static WifiManager instance;
+        static WifiManager instance; // Get the singleton instance
         return instance;
     }
 
@@ -60,8 +49,7 @@ private:
     void reconnectTask();
 
     WifiManager() : StatefulObjectLogged<wifiState_t>("WifiManager", wifiState_t::NOT_INITIALIZED) {
-        // Start the reconnectTask in a separate thread
-        std::thread(&WifiManager::reconnectTask, this).detach();
+        std::thread(&WifiManager::reconnectTask, this).detach(); // Start the reconnectTask in a separate thread
     }
 
     ~WifiManager() {
@@ -71,7 +59,13 @@ private:
     }
 
     std::string getStateAsString() const override {
-        return wifiStateToString(getState()); // Use the custom conversion function
+        switch (getState()) {
+            case wifiState_t::NOT_INITIALIZED: return "NOT_INITIALIZED";
+            case wifiState_t::DISCONNECTED: return "DISCONNECTED";
+            case wifiState_t::CONNECTING: return "CONNECTING";
+            case wifiState_t::CONNECTED: return "CONNECTED";
+            default: return "UNKNOWN";
+        }
     }
 
     void checkWifiSignalStrength();

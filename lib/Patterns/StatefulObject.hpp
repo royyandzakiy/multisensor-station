@@ -40,9 +40,13 @@ public:
         if (this->state != newState) {
             this->state = newState;
             this->notifyObservers();
-            logger.logStateChange(this->id, this->getStateAsString());
+            // logger.logStateChange(this->id, this->getStateAsString());
         }
     }
 
     virtual std::string getStateAsString() const = 0;
+
+private:
+    std::string id;  // Unique identifier for the object
+    T state;         // Current state
 };

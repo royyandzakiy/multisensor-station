@@ -24,6 +24,7 @@ void WifiManager::init() {
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
+    // while(1);
     ESP_ERROR_CHECK(esp_wifi_start());
 
 #ifdef DEBUG_MODE
@@ -39,6 +40,7 @@ void WifiManager::reconnectTask() {
     while (true) {
         std::unique_lock<std::mutex> lock(mtx);
         cv.wait(lock, [this] { return getState() == wifiState_t::DISCONNECTED; });
+        // cv.wait(lock, [this] { return (getState() == wifiState_t::DISCONNECTED) || (getState() == wifiState_t::CONNECTING); });
 
         ESP_LOGI(TAG, "Attempting to reconnect to Wi-Fi...");
 
@@ -94,6 +96,7 @@ void WifiManager::eventHandler(void* arg, esp_event_base_t event_base, int32_t e
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         self.setState(wifiState_t::CONNECTING);
         ESP_ERROR_CHECK(esp_wifi_connect());
+
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         self.setState(wifiState_t::DISCONNECTED);
         ESP_LOGI(TAG, "Wifi connect to the AP FAIL or DISCONNECTED");
