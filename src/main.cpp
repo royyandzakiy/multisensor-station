@@ -27,11 +27,11 @@ int main() {
     WifiManager& wifiManager = WifiManager::getInstance();
     wifiManager.init();
     ESP_LOGI(MAIN_TAG, "========= Main End =========");
-#ifdef NOT_YET_DEVELOPED
 
     MqttManager& mqttManager = MqttManager::getInstance();
     mqttManager.init();
 
+#ifdef NOT_YET_DEVELOPED
 
     // Ensure Event Logger and LED Manager are running
     EventLogger::getInstance(); // Singleton initialization

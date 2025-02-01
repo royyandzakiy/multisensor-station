@@ -12,7 +12,7 @@ public:
     virtual void setState(const T& newState) {
         if (state != newState) {
             state = newState;
-            notifyObservers();
+            // notifyObservers();
         }
     }
 
@@ -39,7 +39,7 @@ public:
         auto& logger = EventLogger::getInstance();
         if (this->state != newState) {
             this->state = newState;
-            this->notifyObservers();
+            // this->notifyObservers();
             // logger.logStateChange(this->id, this->getStateAsString());
         }
     }
