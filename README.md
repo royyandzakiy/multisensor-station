@@ -10,6 +10,8 @@
         - connect wifi & mqtt; publish to mqtt;
     - logger
         - successfully logging state change of all statefulobject (bug of T type);
+        - option 1: when init stateful object add param to activate logger
+        - option 2: stateful object becomes observable, add logger in the init
     - reduce image size to be able for upload
     - ota
 - phase 2

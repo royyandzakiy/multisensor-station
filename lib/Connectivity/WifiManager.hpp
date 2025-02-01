@@ -34,6 +34,16 @@ enum class wifiState_t {
 
 class WifiManager : public StatefulObject<wifiState_t> {
 public:
+    std::string wifiStateToString(wifiState_t state) const {
+        switch (state) {
+            case wifiState_t::NOT_INITIALIZED: return "NOT_INITIALIZED";
+            case wifiState_t::DISCONNECTED: return "DISCONNECTED";
+            case wifiState_t::CONNECTING: return "CONNECTING";
+            case wifiState_t::CONNECTED: return "CONNECTED";
+            default: return "UNKNOWN";
+        }
+    }
+
     // Get the singleton instance
     static WifiManager& getInstance() {
         static WifiManager instance;
@@ -58,6 +68,10 @@ private:
         if (wifiCheckThread.joinable()) {
             wifiCheckThread.join();
         }
+    }
+
+    std::string getStateAsString() const override {
+        return wifiStateToString(getState()); // Use the custom conversion function
     }
 
     void checkWifiSignalStrength();

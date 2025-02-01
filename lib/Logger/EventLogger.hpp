@@ -6,7 +6,9 @@
 #include <iomanip> // do not use
 #include <sstream> // do not use
 
-class EventLogger {
+#include <Observer.hpp>
+
+class EventLogger: public Observer {
 public:
     using LogCallback = std::function<void(const std::string& id, const std::string& state)>;
 
@@ -16,9 +18,17 @@ public:
         return instance;
     }
 
+    void notify(std::weak_ptr<Observable> observable) override {
+        if (auto obs = observable.lock()) {
+            // Cast the observable to StatefulObject and get its state
+            // if (auto statefulObj = std::dynamic_pointer_cast<StatefulObject>(obs)) {
+            //     logStateChange(statefulObj->getId(), statefulObj->getStateAsString());
+            }
+        }
+    }
+
     // Log a state change
-    template <typename T>
-    void logStateChange(const std::string& id, const T& state) {
+    void logStateChange(const std::string& id, const std::string& state) {
         std::lock_guard<std::mutex> lock(mtx);
         std::stringstream ss;
         ss << "[" << getCurrentTimestamp() << "] " << id << " -> " << state;
