@@ -27,8 +27,17 @@ enum class mqttState_t {
     CONNECTED
 };
 
-class MqttManager : public StatefulObject<mqttState_t> {
+class MqttManager : public StatefulObjectLogged<mqttState_t> {
 public:
+    std::string mqttStateToString(mqttState_t state) const {
+        switch (state) {
+            case mqttState_t::NOT_INITIALIZED: return "NOT_INITIALIZED";
+            case mqttState_t::DISCONNECTED: return "DISCONNECTED";
+            case mqttState_t::CONNECTED: return "CONNECTED";
+            default: return "UNKNOWN";
+        }
+    }
+
     static MqttManager& getInstance() {
         static MqttManager instance; // Get the singleton instance
         return instance;
@@ -48,10 +57,14 @@ public:
 
 private:
     MqttManager()
-        : StatefulObject<mqttState_t>("MqttManager", mqttState_t::NOT_INITIALIZED) {
+        : StatefulObjectLogged<mqttState_t>("MqttManager", mqttState_t::NOT_INITIALIZED) {
     }
 
     ~MqttManager() {
+    }
+
+    std::string getStateAsString() const override {
+        return mqttStateToString(getState()); // Use the custom conversion function
     }
 
     esp_mqtt_client_handle_t getMqttClient() {

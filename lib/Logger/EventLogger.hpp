@@ -1,14 +1,13 @@
 #pragma once
 #include <functional>
 #include <vector>
+#include <string>
 #include <mutex>
 #include <iostream> // do not use
 #include <iomanip> // do not use
 #include <sstream> // do not use
 
-#include <Observer.hpp>
-
-class EventLogger: public Observer {
+class EventLogger {
 public:
     using LogCallback = std::function<void(const std::string& id, const std::string& state)>;
 
@@ -16,15 +15,6 @@ public:
     static EventLogger& getInstance() {
         static EventLogger instance;
         return instance;
-    }
-
-    void notify(std::weak_ptr<Observable> observable) override {
-        if (auto obs = observable.lock()) {
-            // Cast the observable to StatefulObject and get its state
-            // if (auto statefulObj = std::dynamic_pointer_cast<StatefulObject>(obs)) {
-            //     logStateChange(statefulObj->getId(), statefulObj->getStateAsString());
-            }
-        }
     }
 
     // Log a state change

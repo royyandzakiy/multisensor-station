@@ -32,7 +32,7 @@ enum class wifiState_t {
     CONNECTED
 };
 
-class WifiManager : public StatefulObject<wifiState_t> {
+class WifiManager : public StatefulObjectLogged<wifiState_t> {
 public:
     std::string wifiStateToString(wifiState_t state) const {
         switch (state) {
@@ -59,7 +59,7 @@ public:
 private:
     void reconnectTask();
 
-    WifiManager() : StatefulObject<wifiState_t>("WifiManager", wifiState_t::NOT_INITIALIZED) {
+    WifiManager() : StatefulObjectLogged<wifiState_t>("WifiManager", wifiState_t::NOT_INITIALIZED) {
         // Start the reconnectTask in a separate thread
         std::thread(&WifiManager::reconnectTask, this).detach();
     }
