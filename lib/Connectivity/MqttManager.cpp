@@ -2,10 +2,7 @@
 
 void MqttManager::init() {
     esp_mqtt_client_config_t mqtt_cfg = {};
-    mqtt_cfg.host = MQTT_SERVER;
-    mqtt_cfg.username = MQTT_USERNAME;
-    mqtt_cfg.password = MQTT_PASSWORD;
-    mqtt_cfg.port = 1883;
+    mqtt_cfg.broker.address.uri = CONFIG_MQTT_BROKER_URI; // Use URI for the broker address
 
     client = esp_mqtt_client_init(&mqtt_cfg);
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, &MqttManager::eventHandler, this);
