@@ -4,9 +4,6 @@
 #include <string>
 #include <mutex>
 #include <esp_log.h>
-#include <iostream> // do not use
-#include <iomanip> // do not use
-#include <sstream> // do not use
 
 // #define CB
 #ifdef CB
@@ -48,7 +45,7 @@ public:
     void debug_printLatestLogs() const {
         std::lock_guard<std::mutex> lock(mtx);
         for (const auto& log : logs) {
-            std::cout << log << std::endl;
+            ESP_LOGI(TAG, "%s", log.c_str());
         }
     }
 
