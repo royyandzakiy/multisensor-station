@@ -10,6 +10,18 @@ This repository contains a robust and modular (mostly) C++20-based system design
 - **Testing and Separation of Concerns**: The system is designed with a clear separation of concerns, making it easy to test individual components. Native C++20 features are used to ensure modern and efficient code.
 
 ## Getting Started
+### Prerequisites
+- VS Code with PlatformIO IDE installed.
+- ESP32 DOIT V1 connected via USB.
+### Steps
+- Clone the Repository:
+    ```bash
+    git clone <repository-url>
+    cd <repository-folder>
+    ```
+- Open in VS Code
+- Change `src/credentials.h.change_this` to just `credentials.h`
+- Build & Upload
 
 ## Development Notes
 - Requirements & Architecture
