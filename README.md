@@ -11,7 +11,7 @@ This repository contains a robust and modular (mostly) C++20-based system design
 
 ## Getting Started
 ### Prerequisites
-- VS Code with PlatformIO IDE installed.
+- VS Code with PlatformIO IDE installed (PlatformIO core version `6.1.16`, framework-espidf @ `3.50400.0` (ESP IDF version `5.4.0`))
 - ESP32 DOIT V1 connected via USB.
 ### Steps
 - Clone the Repository:
