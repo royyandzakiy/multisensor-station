@@ -3,29 +3,30 @@
 ## Getting Started
 
 ## Development Notes
-- requirement & architecture
-- phase 1
-    - [x] patterns
-    - [x] connectivity
+- Requirements & Architecture
+- Phase 1
+    - [x] Patterns
+    - [x] Connectivity
         - connect wifi & mqtt
         - reconnect wifi
         - publish to mqtt
-    - [x] partitions
+    - [x] Partitions
         - reduce image size to be able for upload
-    - [x] logger
-        - successfully logging state change of all statefulobject (bug of T type);
-        - option 1: when init stateful object add param to activate logger
-        - option 2: stateful object becomes observable, add logger in the init
-    - ota
+    - [x] Logger
+        - successfully logging state change of all StatefulObjectLogged
+    - [x] Circular Buffer
+        - success implementing logic & test cases
+    - [ ] OTA
+    - [ ] Core Dump
 - phase 2
-    - sensor (dummy), circularbufferqueue, sensormanager
-    - dataacquisitor
-    - filesystem (spiffs)
+    - [ ] Sensor (dummy), SensorManager
+    - [ ] DataAcquisitor
+    - [ ] Filesystem (spiffs)
 - phase 3
-    - sensor (real)
-    - filesystem (sdcard)
-    - config
-    - led
+    - [ ] Sensor (real)
+    - [ ] Filesystem (sdcard)
+    - [ ] Config
+    - [ ] LED
 
 ## Design
 ```markdown
