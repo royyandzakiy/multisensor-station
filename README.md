@@ -5,14 +5,14 @@
 ## Development Notes
 - requirement & architecture
 - phase 1
-    - [v] patterns
-    - [v] connectivity
+    - [x] patterns
+    - [x] connectivity
         - connect wifi & mqtt
         - reconnect wifi
         - publish to mqtt
-    - [v] partitions
+    - [x] partitions
         - reduce image size to be able for upload
-    - [v] logger
+    - [x] logger
         - successfully logging state change of all statefulobject (bug of T type);
         - option 1: when init stateful object add param to activate logger
         - option 2: stateful object becomes observable, add logger in the init
