@@ -38,6 +38,32 @@ This repository contains a robust and modular (mostly) C++20-based system design
     - [ ] LED
 
 ## Design
+```
++-------------------+       +-------------------+       +----------------------+
+|     Sensor        |       |  SensorManager    |       |  SensorDataPublisher |
+|  (Observable)     |<------|  (Manages Sensors)|<------|  (Observer)          |
++-------------------+       +-------------------+       +----------------------+
+        |                                                       |
+        v                                                       v
++-------------------+       +-------------------+       +-------------------+
+| CircularBuffer    |       |  RedundancyData   |       |  MqttManager      |
+|  Queue (Storage)  |------>|  Storage (Backup) |<------|  (Publishes Data) |
++-------------------+       +-------------------+       +-------------------+
+                                    |                           |
+        +---------------------------+                           |
+        v                                                       v
++-------------------+       +-------------------+       +-------------------+
+|  FileSystem       |       |  EventLogger      |       |  WifiManager      |
+|  (SD Card)        |<------|  (Logs Events)    |<------|  (Handles WiFi)   |
++-------------------+       +-------------------+       +-------------------+
+        |                           ^                           |
+        v                           |                           v
++-------------------+       +-------------------+       +-------------------+
+|  OtaManager       |       |  LedManager       |       |  Config           |
+|  (OTA Updates)    |<------|  (LED Indicators) |       |  (WiFi/MQTT/etc)  |
++-------------------+       +-------------------+       +-------------------+
+```
+
 ```markdown
 ### Sensor
 - General Flow: read then queue & notify > publish else store > dequeue -- it is expected to have these function calls seperate to keep data redundancy
