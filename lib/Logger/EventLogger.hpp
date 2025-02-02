@@ -5,11 +5,11 @@
 #include <mutex>
 #include <esp_log.h>
 
-#define CIRCULLAR_BUFFER_MAX_SIZE 10
 #define USE_CIRCULAR_BUFFER
 // #define USE_VECTOR
 
 #ifdef USE_CIRCULAR_BUFFER
+#define CIRCULAR_BUFFER_MAX_SIZE 30
 #include <CircularBuffer.hpp>
 #elif defined(USE_VECTOR)
 // include nothing
@@ -23,28 +23,30 @@ public:
         static EventLogger instance; // Get the singleton instance
         return instance;
     }
-
-    // Log a state change
+       
     void logStateChange(const std::string& id, const std::string& state) {
-        std::lock_guard<std::mutex> lock(mtx);
-        static char buffer[64];
-        snprintf(buffer, sizeof(buffer), "[%s] %s -> %s", getCurrentTimestamp().c_str(), id.c_str(), state.c_str());
-        ESP_LOGI(TAG, "%s", buffer);
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+            static char buffer[64];
+            snprintf(buffer, sizeof(buffer), "[%s] %s -> %s", getCurrentTimestamp().c_str(), id.c_str(), state.c_str());
+            ESP_LOGI(TAG, "%s", buffer);
 #ifdef USE_CIRCULAR_BUFFER
-        logs.push(std::string(buffer));
+            logs.push(std::string(buffer));
+        } // make mutex go out of bounds
 
         if (logs.is_max()) {
-            debug_printLatestLogs();
+            printLatestLogs();
         }
 #elif defined(USE_VECTOR)
-        logs.push_back(std::string(buffer));
+            logs.push_back(std::string(buffer));
 #endif
 
-        // Notify observers
+        // // Notify observers, still error
         // for (const auto& callback : callbacks) {
-        // for (int i=0; i<callbacks.size(); i++) {
-        //     auto& callback = callbacks[i];
-        //     callback(id, state);
+        //     for (int i=0; i<callbacks.size(); i++) {
+        //         auto& callback = callbacks[i];
+        //         callback(id, state);
+        //     }
         // }
     }
 
@@ -53,7 +55,7 @@ public:
         callbacks.fill(callback);
     }
 
-    void debug_printLatestLogs() {
+    void printLatestLogs() {
         std::lock_guard<std::mutex> lock(mtx);
         for (std::size_t i = 0; i < logs.size(); ++i) {
             const std::optional<std::string>& log = logs.at(i);
@@ -71,6 +73,7 @@ private:
     EventLogger& operator=(const EventLogger&) = delete;
 
     std::string getCurrentTimestamp() const {
+        // not yet implemented
         // auto now = std::chrono::system_clock::now();
         // auto in_time_t = std::chrono::system_clock::to_time_t(now);
         // std::stringstream ss;
@@ -81,7 +84,7 @@ private:
     }
 
 #ifdef USE_CIRCULAR_BUFFER
-    CircularBuffer<std::string, CIRCULLAR_BUFFER_MAX_SIZE> logs;
+    CircularBuffer<std::string, CIRCULAR_BUFFER_MAX_SIZE> logs;
 #elif defined(USE_VECTOR)
     std::vector<std::string> logs;               // In-memory log storage
 #endif

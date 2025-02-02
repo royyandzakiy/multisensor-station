@@ -14,6 +14,9 @@ public:
 
     // Push an item into the buffer (supports both copyable and movable types)
     bool push(const T& item) {
+#ifdef PLATFORM_ESP32
+        ESP_LOGD("CircularBuffer", "attempt to push: %d", size_);
+#endif // PLATFORM_ESP32        
         std::size_t next_head = (head_ + 1) % (BufferSize + 1);
 
         if (is_max()) {
@@ -26,12 +29,15 @@ public:
         head_ = next_head;
         ++size_;
 #ifdef PLATFORM_ESP32
-        ESP_LOGI("CircularBuffer", "total count: %d", size_);
-#endif
+        ESP_LOGD("CircularBuffer", "total count: %d", size_);
+#endif // PLATFORM_ESP32
         return true;
     }
 
     bool push(T&& item) {
+#ifdef PLATFORM_ESP32
+        ESP_LOGD("CircularBuffer", "attempt to push: %d", size_);
+#endif // PLATFORM_ESP32
         std::size_t next_head = (head_ + 1) % (BufferSize + 1);
         
         if (is_max()) {
@@ -44,13 +50,16 @@ public:
         head_ = next_head;
         ++size_;
 #ifdef PLATFORM_ESP32
-        ESP_LOGI("CircularBuffer", "total count: %d", size_);
-#endif
+        ESP_LOGD("CircularBuffer", "total count: %d", size_);
+#endif // PLATFORM_ESP32
         return true;
     }
 
     // Pop an item from the buffer
     std::optional<T> pop() {
+#ifdef PLATFORM_ESP32
+        ESP_LOGD("CircularBuffer", "attempt to ppop: %d", size_);
+#endif // PLATFORM_ESP32
         if (is_empty()) {
             return std::nullopt; // Buffer is empty
         }
@@ -59,8 +68,8 @@ public:
         tail_ = (tail_ + 1) % (BufferSize + 1);
         --size_;
 #ifdef PLATFORM_ESP32
-        ESP_LOGI("CircularBuffer", "total count: %d", size_);
-#endif
+        ESP_LOGD("CircularBuffer", "total count: %d", size_);
+#endif // PLATFORM_ESP32
         return item;
     }
 

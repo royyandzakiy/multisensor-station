@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-#include <memory>
 #include <esp_system.h>
 #include <esp_wifi.h>
 #include <esp_event.h>
@@ -12,10 +10,13 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <freertos/event_groups.h>
+#include <ping/ping_sock.h>
+#include <string.h>
+#include <string>
+#include <memory>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <string.h>
 
 #include <../../src/credentials.h>
 #include <StatefulObject.hpp>
@@ -40,13 +41,18 @@ public:
     }
 
     void init();
-
+    void updateCredentials(const std::string& ssid, const std::string& password);
     bool isConnected() {
         return getState() == wifiState_t::CONNECTED;
     }
 
 private:
+    void reconnect();
     void reconnectTask();
+    bool checkInternetConnectivity();
+    void checkInternetConnectivityTask();
+    static void eventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
+    void checkWifiSignalStrength();
 
     WifiManager() : StatefulObjectLogged<wifiState_t>("WifiManager", wifiState_t::NOT_INITIALIZED) {
         std::thread(&WifiManager::reconnectTask, this).detach(); // Start the reconnectTask in a separate thread
@@ -68,22 +74,14 @@ private:
         }
     }
 
-    void checkWifiSignalStrength();
-
-    void wifiCheckTask();
-
-    static void eventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
-
     std::mutex mtx;
     std::condition_variable cv;
     std::thread wifiCheckThread;
-
     static constexpr const char* TAG = "WifiManager";
     static int wifi_reconnect_retry_count;
     static EventGroupHandle_t s_wifi_event_group;
     static constexpr int WIFI_CONNECTED_BIT = BIT0;
     static constexpr int WIFI_FAIL_BIT = BIT1;    
-
     esp_event_handler_instance_t instance_any_id{};
     esp_event_handler_instance_t instance_got_ip{};
 };
