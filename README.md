@@ -29,7 +29,7 @@ This repository contains a robust and modular (mostly) C++20-based system design
 # Developer Zone
 ## Development Notes
 - Requirements & Architecture
-- Phase 1
+- `Phase 1`
     - [x] Patterns
     - [x] Connectivity
         - connect wifi & mqtt
@@ -43,11 +43,11 @@ This repository contains a robust and modular (mostly) C++20-based system design
         - success implementing logic & test cases
     - [ ] OTA
     - [ ] Core Dump
-- phase 2
+- `phase 2`
     - [ ] Sensor (dummy), SensorManager
     - [ ] DataAcquisitor
     - [ ] Filesystem (spiffs)
-- phase 3
+- `phase 3`
     - [ ] Sensor (real)
     - [ ] Filesystem (sdcard)
     - [ ] Config
