@@ -5,14 +5,17 @@
 ## Development Notes
 - requirement & architecture
 - phase 1
-    - patterns
-    - connectivity
-        - connect wifi & mqtt; publish to mqtt;
-    - logger
+    - [v] patterns
+    - [v] connectivity
+        - connect wifi & mqtt
+        - reconnect wifi
+        - publish to mqtt
+    - [v] partitions
+        - reduce image size to be able for upload
+    - [v] logger
         - successfully logging state change of all statefulobject (bug of T type);
         - option 1: when init stateful object add param to activate logger
         - option 2: stateful object becomes observable, add logger in the init
-    - reduce image size to be able for upload
     - ota
 - phase 2
     - sensor (dummy), circularbufferqueue, sensormanager
@@ -22,6 +25,7 @@
     - sensor (real)
     - filesystem (sdcard)
     - config
+    - led
 
 ## Design
 ```markdown
