@@ -1,4 +1,13 @@
 # Multi Sensor Box
+This repository contains a robust and modular (mostly) C++20-based system designed for acquiring, managing, and transmitting sensor data in a reliable and fault-tolerant manner. The system is built with flexibility in mind, allowing for easy integration of various sensors and ensuring that sensor data is never lost, even in the event of connectivity issues or sensor failures.
+
+## Key Features
+- **Modular Sensor Integration**: The system supports multiple sensors with a design that allows for easy swapping and addition of new sensors. Each sensor operates independently, ensuring that a failure in one sensor does not affect others.
+- **Data Redundancy and Reliability**: Sensor data is stored in a circular buffer queue and backed up in a redundancy storage system. If connectivity is lost, data is retained with timestamps and retransmitted once connectivity is restored.
+- **State Management and Logging**: The system uses a StatefulObject pattern to manage the state of various components (e.g., sensors, WiFi, MQTT) and an EventLogger to capture state changes and important events for debugging purposes.
+- **Connectivity**: The system maintains a persistent WiFi connection and uses MQTT for data transmission. It includes mechanisms to handle connectivity failures and ensure data is transmitted reliably.
+- **Over-the-Air (OTA) Updates**: The system supports OTA updates, allowing for remote monitoring and updates through a fleet management cloud service.
+- **Testing and Separation of Concerns**: The system is designed with a clear separation of concerns, making it easy to test individual components. Native C++20 features are used to ensure modern and efficient code.
 
 ## Getting Started
 
