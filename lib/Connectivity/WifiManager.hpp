@@ -55,7 +55,7 @@ private:
     void checkWifiSignalStrength();
 
     WifiManager() : StatefulObjectLogged<wifiState_t>("WifiManager", wifiState_t::NOT_INITIALIZED) {
-        std::thread(&WifiManager::reconnectTask, this).detach(); // Start the reconnectTask in a separate thread
+        std::thread(&WifiManager::reconnectTask, this).detach();
     }
 
     ~WifiManager() {

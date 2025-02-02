@@ -61,6 +61,7 @@ void WifiManager::reconnectTask() {
 
         if (isConnected()) {
             ESP_LOGD(TAG, "Connection restored. ReconnectTask will now wait for the next disconnect event.");
+
             backoffDelay = 10; // Reset backoff delay
         } else {
             ESP_LOGD(TAG, "Failed to reconnect, will retry later...");
@@ -89,17 +90,18 @@ bool WifiManager::checkInternetConnectivity() {
 }
 
 void WifiManager::checkInternetConnectivityTask() {
-    ESP_LOGD(TAG, "task Started");
+    ESP_LOGD(TAG, "checkInternetConnectivityTask Started");
+
     while (true) {
         std::unique_lock<std::mutex> lock(mtx);
 
-        if (isConnected() && !checkInternetConnectivity()) {
-            ESP_LOGD(TAG, "No internet connectivity, triggering reconnection...");
-            setState(wifiState_t::DISCONNECTED);
-            cv.notify_all();
-        }
+        // Wait for a notification (e.g., WiFi connected event)
+        cv.wait_for(lock, std::chrono::seconds(300), [this] { return isConnected(); });
 
-        cv.wait_for(lock, std::chrono::seconds(5));
+        if (!checkInternetConnectivity()) {
+            ESP_LOGD(TAG, "No internet connectivity, triggering reconnection...");
+            reconnect();
+        }
     }
 }
 
