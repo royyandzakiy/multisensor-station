@@ -54,7 +54,7 @@ This repository contains a robust and modular (mostly) C++20-based system design
 - phase 3
     - [ ] Sensor (real)
     - [ ] Filesystem (sdcard)
-    - [ ] Config, Config Manager
+    - [ ] Config, Config Manager, mutex
     - [ ] Device Identity, Device Provisioning
     - [ ] Device heartbeat
 - phase 4
