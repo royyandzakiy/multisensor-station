@@ -41,17 +41,34 @@ This repository contains a robust and modular (mostly) C++20-based system design
         - successfully logging state change of all StatefulObjectLogged
     - [x] Circular Buffer
         - success implementing logic & test cases
-    - [ ] OTA
-    - [ ] Core Dump
+    - [ ] OTA, https cert
+    - [ ] task profiler, task monitor
 - phase 2
     - [ ] Sensor (dummy), SensorManager
+    - [ ] Sampler
+    - [ ] Core Dump
+    - [ ] Recipe/Pipeline
+    - [ ] Time, RTC
     - [ ] DataAcquisitor
     - [ ] Filesystem (spiffs)
 - phase 3
     - [ ] Sensor (real)
     - [ ] Filesystem (sdcard)
-    - [ ] Config
-    - [ ] LED
+    - [ ] Config, Config Manager
+    - [ ] Device Identity, Device Provisioning
+    - [ ] Device heartbeat
+- phase 4
+    - [ ] gsm manager
+    - [ ] internet manager
+    - [ ] Config Menu
+    - [ ] ble interface
+    - [ ] wifi secure, jwt
+    - [ ] web async interface, mdns
+    - [ ] button interface
+    - [ ] LED, Beeper
+- phase 5
+    - [ ] control motor (to rotate)
+    - [ ] sense motor movement (encoder)
 
 ## Design
 ```
