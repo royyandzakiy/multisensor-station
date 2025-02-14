@@ -24,12 +24,11 @@ This repository contains a robust and modular (mostly) C++20-based system design
 - Build & Upload
 
 ---
----
 
 # Developer Zone
 ## Development Notes
 - Requirements & Architecture
-- Phase 1
+- Phase 1: Basic Functions
     - [x] Patterns
     - [x] Connectivity
         - connect wifi & mqtt
@@ -41,9 +40,9 @@ This repository contains a robust and modular (mostly) C++20-based system design
         - successfully logging state change of all StatefulObjectLogged
     - [x] Circular Buffer
         - success implementing logic & test cases
-    - [ ] OTA, https cert
-    - [ ] task profiler, task monitor
-- phase 2
+    - [ ] OTA, thingsboard, https cert
+    - [ ] task profiler, tasks list
+- Phase 2: Sensing
     - [ ] Sensor (dummy), SensorManager
     - [ ] Sampler
     - [ ] Core Dump
@@ -51,13 +50,13 @@ This repository contains a robust and modular (mostly) C++20-based system design
     - [ ] Time, RTC
     - [ ] DataAcquisitor
     - [ ] Filesystem (spiffs)
-- phase 3
-    - [ ] Sensor (real)
+- Phase 3
+    - [ ] Sensor (real) -- CAN, Mod, SPI, I2C, UART, Signal
     - [ ] Filesystem (sdcard)
     - [ ] Config, Config Manager, mutex
     - [ ] Device Identity, Device Provisioning
     - [ ] Device heartbeat
-- phase 4
+- Phase 4
     - [ ] gsm manager
     - [ ] internet manager
     - [ ] Config Menu
@@ -66,7 +65,7 @@ This repository contains a robust and modular (mostly) C++20-based system design
     - [ ] web async interface, mdns
     - [ ] button interface
     - [ ] LED, Beeper
-- phase 5
+- Phase 5
     - [ ] control motor (to rotate)
     - [ ] sense motor movement (encoder)
 
