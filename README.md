@@ -40,6 +40,7 @@ This repository contains a robust and modular (mostly) C++20-based system design
         - successfully logging state change of all StatefulObjectLogged
     - [x] Circular Buffer
         - success implementing logic & test cases
+    - [ ] StateMachine -- Refactor from StatefulObject
     - [ ] OTA, thingsboard, https cert
     - [ ] task profiler, tasks list
 - Phase 2: Sensing
@@ -57,13 +58,13 @@ This repository contains a robust and modular (mostly) C++20-based system design
     - [ ] Device Identity, Device Provisioning
     - [ ] Device heartbeat
 - Phase 4
-    - [ ] gsm manager
-    - [ ] internet manager
-    - [ ] Config Menu
-    - [ ] ble interface
-    - [ ] wifi secure, jwt
-    - [ ] web async interface, mdns
-    - [ ] button interface
+    - [ ] GSM Manager
+    - [ ] (General) Internet Manager
+    - [ ] Config Command Router
+    - [ ] BLE Interface
+    - [ ] Wifi Secure, JWT
+    - [ ] Web Async Interface, MDNS
+    - [ ] Button Interface
     - [ ] LED, Beeper
 - Phase 5
     - [ ] control motor (to rotate)
