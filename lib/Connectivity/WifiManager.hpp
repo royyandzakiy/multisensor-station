@@ -45,9 +45,9 @@ public:
     bool isConnected() {
         return getState() == wifiState_t::CONNECTED;
     }
+    void reconnect();
 
 private:
-    void reconnect();
     void reconnectTask();
     bool checkInternetConnectivity();
     void checkInternetConnectivityTask();

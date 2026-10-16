@@ -65,9 +65,10 @@ void TaskProfilerMonitor::print_table_header() {
 }
 
 void TaskProfilerMonitor::print_table_row(const TaskStats& stats) {
-    // ESP_LOGI(TAG, "| %-20s | %-14lld | %-14lu | %-14lu | %-14zu |",
-    ESP_LOGI(TAG, "| %zu | %zu | %zu | %zu | %zu |",
-             stats.name.c_str(), stats.execution_time.count(), stats.cpu_usage, stats.stack_high_water_mark, stats.heap_free);
+    ESP_LOGI(TAG, "| %-20s | %-14lld | %-14lu | %-14lu | %-14zu |",
+             stats.name.c_str(), static_cast<long long>(stats.execution_time.count()),
+             static_cast<unsigned long>(stats.cpu_usage), static_cast<unsigned long>(stats.stack_high_water_mark),
+             stats.heap_free);
 }
 
 void TaskProfilerMonitor::print_table_footer() {
@@ -148,7 +149,7 @@ void TaskProfilerMonitor::monitor_heap() {
     size_t free_heap = esp_get_free_heap_size();
     ESP_LOGI(TAG, "Free Heap Size: %zu bytes", free_heap);
 
-    heap_info_t info;
+    multi_heap_info_t info;
     heap_caps_get_info(&info, MALLOC_CAP_DEFAULT);
     ESP_LOGI(TAG, "Largest Free Block: %zu bytes", info.largest_free_block);
 }

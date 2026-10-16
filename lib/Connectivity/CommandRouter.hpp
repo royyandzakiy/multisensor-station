@@ -124,8 +124,8 @@ public:
 };
 
 // MAIN
-// extern "C" void app_main() {
-extern "C" void the_main() {
+// inline, so the header can be included from more than one source file without duplicate symbols.
+inline void commandRouterExample() {
     // Create instances of dependencies
     LEDManager ledManager;
     MotorController motorController;

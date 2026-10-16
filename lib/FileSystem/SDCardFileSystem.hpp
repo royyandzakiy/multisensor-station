@@ -23,11 +23,10 @@ public:
         esp_err_t ret;
 
         // Options for mounting the filesystem.
-        esp_vfs_fat_sdmmc_mount_config_t mount_config = {
-            .format_if_mount_failed = false,
-            .max_files = 5,
-            .allocation_unit_size = 16 * 1024
-        };
+        esp_vfs_fat_sdmmc_mount_config_t mount_config = {};
+        mount_config.format_if_mount_failed = false;
+        mount_config.max_files = 5;
+        mount_config.allocation_unit_size = 16 * 1024;
 
         // Use SDMMC peripheral
         sdmmc_host_t host = SDMMC_HOST_DEFAULT();
@@ -57,10 +56,9 @@ public:
     }
 
     void unmount() {
-        if (fs) {
-            esp_vfs_fat_sdmmc_unmount();
+        if (card) {
+            esp_vfs_fat_sdcard_unmount("/sdcard", card);
             ESP_LOGI(SD_TAG, "Card unmounted");
-            fs = WL_INVALID_HANDLE;
             card = nullptr;
         }
     }
@@ -191,7 +189,7 @@ private:
     wl_handle_t fs;
 };
 
-void exampleMain() {
+inline void exampleMain() {
     SDCardFilesystem& sdcard = SDCardFilesystem::getInstance();
 
     if (sdcard.mount()) {

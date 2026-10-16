@@ -31,7 +31,7 @@ void WifiManager::init() {
     ESP_ERROR_CHECK(esp_wifi_start());
 
 #ifdef DEBUG_MODE
-    wifiCheckThread = std::thread(&WifiManager::wifiCheckTask, this);
+    wifiCheckThread = std::thread(&WifiManager::checkInternetConnectivityTask, this);
 #endif // DEBUG_MODE
 
     ESP_LOGI(TAG, "WifiManager successfully initialized.");

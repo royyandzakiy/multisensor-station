@@ -102,12 +102,14 @@ private:
         setState(OtaState::Downloading);
 
         // Perform the OTA update
-        esp_http_client_config_t config = {
-            .url = "https://your.thingsboard.server/firmware.bin",
-            .cert_pem = nullptr, // Add certificate if using HTTPS
-        };
+        esp_http_client_config_t config = {};
+        config.url = "https://your.thingsboard.server/firmware.bin";
+        config.cert_pem = nullptr; // Add certificate if using HTTPS
 
-        esp_err_t ret = esp_https_ota(&config);
+        esp_https_ota_config_t ota_config = {};
+        ota_config.http_config = &config;
+
+        esp_err_t ret = esp_https_ota(&ota_config);
         if (ret == ESP_OK) {
             setState(OtaState::Success);
             ESP_LOGI(OTA_TAG, "OTA update successful, restarting...");

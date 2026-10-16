@@ -5,12 +5,16 @@
 #include <WifiManager.hpp>
 #include <MqttManager.hpp>
 #include <EventLogger.hpp>
-// #include <OtaManager.hpp>
-// #include <LedManager.hpp>
-// #include <SDCardFilesystem.hpp>
-// #include <SensorManager.hpp>
-// #include <Sensor.hpp>
-// #include <SDCardFileSystem.hpp>
+
+#ifdef NOT_YET_DEVELOPED
+#include <thread>
+#include <vector>
+#include <OtaManager.hpp>
+#include <LedManager.hpp>
+#include <SDCardFileSystem.hpp>
+#include <SensorManager.hpp>
+#include <Sensor.hpp>
+#endif // NOT_YET_DEVELOPED
 
 constexpr const char* MAIN_TAG = "MAIN";
 
@@ -71,7 +75,7 @@ int main() {
     sensorManager.startAllSensorDataAcquisitionTasks();
 
     // Initialize SensorDataPublisher and RedundancyDataStorage
-    SensorDataPublisher& sensorDataPublisher = SensorDataPublisher::getInstance();
+    [[maybe_unused]] SensorDataPublisher& sensorDataPublisher = SensorDataPublisher::getInstance();
     RedundancyDataStorage& redundancyDataStorage = RedundancyDataStorage::getInstance();
 
     // Main loop

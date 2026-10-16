@@ -40,6 +40,8 @@ public:
         return getState() == mqttState_t::CONNECTED;
     }
     
+    void reconnect();
+
     int publish(const std::string& topic, const std::string& data);
 
     int subscribe(const std::string& topic);

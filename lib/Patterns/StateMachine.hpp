@@ -3,21 +3,30 @@
  * @brief this pattern is meant to drive the state of an object or system. this acts as main pattern that will
  * dictate the whole system, committing towards a design that is driven by state, hence trackable by nature, and
  * (hopefully) predictable if any errors occure.
- * 
+ *
  */
 
 #pragma once
 
 #include <functional>
+#include <map>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 #include <memory>
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
+
+// Separate from Observer in Observer.hpp, which is notified with the Observable, not a state pair.
+template<typename stateType_t>
+class StateObserver {
+public:
+    virtual ~StateObserver() = default;
+    virtual void notify(stateType_t oldState, stateType_t newState) = 0;
+};
 
 template<typename stateType_t>
 class StateMachine {
 public:
+    explicit StateMachine(stateType_t initialState) : currentState(initialState) {}
     virtual ~StateMachine() = default;
 
     using StateChangeCallback = std::function<void(stateType_t, stateType_t)>;
@@ -29,7 +38,7 @@ public:
     }
 
     // Register an observer to be notified of all state changes
-    void registerObserver(std::shared_ptr<Observer<stateType_t>> observer) {
+    void registerObserver(std::shared_ptr<StateObserver<stateType_t>> observer) {
         observers.push_back(observer);
     }
 
@@ -79,6 +88,7 @@ protected:
 
     stateType_t currentState;
     std::unordered_map<stateType_t, std::vector<stateType_t>> stateTransitions;
-    std::unordered_map<std::pair<stateType_t, stateType_t>, StateChangeCallback> stateChangeCallbacks;
-    std::vector<std::shared_ptr<Observer<stateType_t>>> observers;
+    // std::map, since std::hash has no specialisation for std::pair.
+    std::map<std::pair<stateType_t, stateType_t>, StateChangeCallback> stateChangeCallbacks;
+    std::vector<std::shared_ptr<StateObserver<stateType_t>>> observers;
 };

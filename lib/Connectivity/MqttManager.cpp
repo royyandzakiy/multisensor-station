@@ -9,6 +9,10 @@ void MqttManager::init() {
     esp_mqtt_client_start(client);
 }
 
+void MqttManager::reconnect() {
+    esp_mqtt_client_reconnect(client);
+}
+
 int MqttManager::publish(const std::string& topic, const std::string& data) {
     int msg_id;
     if (!isConnected()) {
